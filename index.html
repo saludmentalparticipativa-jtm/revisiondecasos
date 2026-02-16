@@ -75,11 +75,12 @@
                     <span class="text-xl font-bold text-blue-900">Psiconecta</span>
                     <span class="ml-2 text-xs bg-red-100 text-red-700 px-2 py-1 rounded font-bold hidden sm:inline-block border border-red-200">Revisión de Casos</span>
                 </div>
-                <div class="hidden md:flex space-x-8 items-center">
+                <div class="hidden md:flex space-x-6 items-center">
                     <a href="#epistemologia" class="text-slate-600 hover:text-red-700 text-sm font-medium transition-colors">Epistemología</a>
                     <a href="#enfoques" class="text-slate-600 hover:text-red-700 text-sm font-medium transition-colors">5 Enfoques</a>
                     <a href="#morin" class="text-slate-600 hover:text-red-700 text-sm font-medium transition-colors">Complejidad Dialéctica</a>
                     <a href="#dialectica" class="text-slate-600 hover:text-red-700 text-sm font-medium transition-colors">Comunidad</a>
+                    <a href="#recursos" class="text-red-700 font-bold text-sm hover:text-red-800 transition-colors">Recursos</a>
                 </div>
             </div>
         </div>
@@ -97,8 +98,8 @@
                 Integramos la psicopatología descriptiva con la escucha biográfica, la salud mental comunitaria y la dialéctica de la complejidad.
             </p>
             <div class="mt-8 flex justify-center gap-4">
-                <button onclick="document.getElementById('epistemologia').scrollIntoView({behavior: 'smooth'})" class="px-8 py-3 border border-transparent text-base font-bold rounded-md text-white bg-red-700 hover:bg-red-800 md:py-4 md:text-lg transition-colors shadow-lg">
-                    Explorar Modelo
+                <button onclick="document.getElementById('recursos').scrollIntoView({behavior: 'smooth'})" class="px-8 py-3 border border-transparent text-base font-bold rounded-md text-white bg-red-700 hover:bg-red-800 md:py-4 md:text-lg transition-colors shadow-lg">
+                    Ver Guías y Casos
                 </button>
             </div>
         </div>
@@ -200,7 +201,7 @@
         </div>
     </section>
 
-    <!-- NEW SECTION: MORIN'S COMPLEXITY -->
+    <!-- SECTION: MORIN'S COMPLEXITY -->
     <section id="morin" class="py-16 bg-slate-100 border-t border-slate-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
@@ -225,7 +226,7 @@
                     </p>
                     <div class="bg-slate-50 p-4 rounded-lg border border-slate-100">
                         <strong class="text-red-700 text-sm block mb-1">En la Clínica:</strong>
-                        <p class="text-sm text-slate-700 italic">"El síntoma (desorden) está intentando organizar una nueva forma de equilibrio (orden) en la vida del paciente. No solo se elimina, se comprende su función."</p>
+                        <p class="text-sm text-slate-700 italic">"El síntoma (desorden) está intentando organizar una nueva forma de equilibrio (orden) en la vida del paciente."</p>
                     </div>
                 </div>
 
@@ -241,7 +242,7 @@
                     </p>
                     <div class="bg-slate-50 p-4 rounded-lg border border-slate-100">
                         <strong class="text-red-700 text-sm block mb-1">En la Clínica:</strong>
-                        <p class="text-sm text-slate-700 italic">"La ansiedad genera aislamiento, y el aislamiento incrementa la ansiedad. Intervenimos en el bucle, no solo en la 'causa' original."</p>
+                        <p class="text-sm text-slate-700 italic">"La ansiedad genera aislamiento, y el aislamiento incrementa la ansiedad. Intervenimos en el bucle recursivo."</p>
                     </div>
                 </div>
 
@@ -257,7 +258,7 @@
                     </p>
                     <div class="bg-slate-50 p-4 rounded-lg border border-slate-100">
                         <strong class="text-red-700 text-sm block mb-1">En la Clínica:</strong>
-                        <p class="text-sm text-slate-700 italic">"En cómo el paciente saluda o paga la sesión (parte) se refleja toda su estructura de personalidad y su historia social (todo)."</p>
+                        <p class="text-sm text-slate-700 italic">"En cómo el paciente saluda o paga la sesión (parte) se refleja toda su estructura de personalidad (todo)."</p>
                     </div>
                 </div>
 
@@ -265,7 +266,7 @@
         </div>
     </section>
 
-    <!-- Section 3: Dialectics & Community Mental Health (Updated) -->
+    <!-- Section 3: Dialectics & Community Mental Health -->
     <section id="dialectica" class="py-16 bg-slate-900 text-white relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -281,7 +282,7 @@
                             </div>
                             <div class="ml-4">
                                 <h4 class="text-lg font-bold text-white">Hospital vs. Territorio</h4>
-                                <p class="text-slate-400 text-sm mt-1">El hospital estabiliza la crisis (DSM-5/Farmacología), pero la recuperación ocurre en la comunidad. La clínica debe ser un puente.</p>
+                                <p class="text-slate-400 text-sm mt-1">El hospital estabiliza la crisis (DSM-5/Farmacología), pero la recuperación ocurre en la comunidad.</p>
                             </div>
                         </div>
                         <div class="flex items-start">
@@ -290,7 +291,7 @@
                             </div>
                             <div class="ml-4">
                                 <h4 class="text-lg font-bold text-white">Síntoma vs. Sentido</h4>
-                                <p class="text-slate-400 text-sm mt-1">Mientras el CIE-11 clasifica el déficit, la mirada existencial busca el sentido del sufrimiento y la potencia del sujeto.</p>
+                                <p class="text-slate-400 text-sm mt-1">Mientras el CIE-11 clasifica el déficit, la mirada existencial busca el sentido del sufrimiento.</p>
                             </div>
                         </div>
                     </div>
@@ -302,9 +303,6 @@
                          <h4 class="font-bold text-blue-200 text-sm uppercase tracking-wider">Matriz de Recuperación</h4>
                     </div>
                     <div id="dialecticsPlot" style="width:100%; height:400px;"></div>
-                    <p class="text-center text-xs text-slate-500 pb-3">
-                        Interactúe con el gráfico. Cada punto es un estado clínico.
-                    </p>
                 </div>
             </div>
         </div>
@@ -322,7 +320,6 @@
 
             <!-- Interactive Stepper -->
             <div class="relative">
-                <!-- Progress Bar Vertical Line -->
                 <div class="absolute left-8 top-0 h-full w-1 bg-slate-200 hidden md:block"></div>
 
                 <div class="space-y-8">
@@ -390,6 +387,50 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEW SECTION: RECURSOS -->
+    <section id="recursos" class="py-16 bg-white border-t-2 border-slate-200">
+        <div class="max-w-5xl mx-auto px-4 text-center">
+            <h2 class="text-3xl font-extrabold text-blue-900 mb-8 border-b-4 border-red-600 inline-block pb-1">Recursos y Material de Apoyo</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
+                
+                <!-- 1) Blue Box: Clínica Psicológica -->
+                <a href="https://drive.google.com/drive/folders/1ARlLcnicPijX9413BFjiLSrLXP0Ua05B?usp=sharing" target="_blank" class="group block bg-blue-900 rounded-xl p-10 shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-2 border-2 border-blue-900 hover:border-blue-700 relative overflow-hidden">
+                     <div class="absolute top-0 right-0 p-4 opacity-10">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z" />
+                        </svg>
+                    </div>
+                    <div class="relative z-10">
+                        <h3 class="text-3xl font-bold text-white mb-2 group-hover:text-blue-200 transition-colors">Clínica Psicológica</h3>
+                        <p class="text-blue-200 text-lg font-medium mb-6">Revisión de Casos</p>
+                        <span class="inline-flex items-center bg-blue-700 text-white font-bold py-2 px-6 rounded-full group-hover:bg-white group-hover:text-blue-900 transition-colors shadow-lg">
+                            Acceder al Drive
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                        </span>
+                    </div>
+                </a>
+
+                <!-- 2) Red Box: Guía Psiconecta -->
+                <a href="#" class="group block bg-red-700 rounded-xl p-10 shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-2 border-2 border-red-700 hover:border-red-500 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                    </div>
+                    <div class="relative z-10">
+                         <h3 class="text-3xl font-bold text-white mb-2 group-hover:text-red-100 transition-colors">Guía Psiconecta</h3>
+                         <p class="text-red-100 text-lg font-medium mb-6">Serums 2026</p>
+                         <span class="inline-flex items-center bg-red-900 text-white font-bold py-2 px-6 rounded-full group-hover:bg-white group-hover:text-red-700 transition-colors shadow-lg">
+                            Descargar PDF
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                         </span>
+                    </div>
+                </a>
+
             </div>
         </div>
     </section>
