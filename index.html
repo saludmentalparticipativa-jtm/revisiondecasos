@@ -3,1221 +3,483 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plataforma Integrativa: Revisión, Epistemología y Crítica</title>
+    <title>Promotores de Bienestar Urbano | Arequipa - Perú</title>
     
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+
+    <!-- Configuración de Paleta Arequipa -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        arequipa: {
+                            carmesi: '#8a1538', /* Rojo Carmesí bandera Arequipa */
+                            carmesiDark: '#660e28',
+                            carmesiLight: '#b0214a',
+                        },
+                        sillar: {
+                            50: '#fdfdfd',
+                            100: '#f5f5f4', /* Color piedra sillar claro */
+                            200: '#e7e5e4',
+                            800: '#44403c',
+                        },
+                        oro: '#ca8a04', /* Dorado escudo */
+                        acentoVerde: '#0f766e', /* Para contraste de bienestar */
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
 
     <style>
-        /* =========================================
-           ESTILOS GLOBALES COMPARTIDOS
-        ========================================= */
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #F8FAFC;
-            color: #1e293b;
+        html { scroll-behavior: smooth; }
+        
+        /* Fondo Misti Estilizado */
+        .bg-misti {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23f5f5f4" fill-opacity="0.5" d="M0,288L48,272C96,256,192,224,288,213.3C384,203,480,213,576,192C672,171,768,117,864,106.7C960,96,1056,128,1152,149.3C1248,171,1344,181,1392,186.7L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path><path fill="%23e7e5e4" fill-opacity="0.8" d="M0,192L60,197.3C120,203,240,213,360,197.3C480,181,600,139,720,122.7C840,107,960,117,1080,149.3C1200,181,1320,235,1380,261.3L1440,288L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"></path></svg>');
+            background-size: cover;
+            background-position: bottom;
+            z-index: 0;
+            pointer-events: none;
         }
 
-        h1, h2, h3, h4, h5, h6, .serif {
-            font-family: 'Merriweather', serif;
+        /* Gráfica: Círculos Concéntricos */
+        .circulo-exterior {
+            width: 320px; height: 320px;
+            border-radius: 50%;
+            border: 3px solid #ca8a04; /* Oro */
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+        }
+        .circulo-medio {
+            width: 220px; height: 220px;
+            border-radius: 50%;
+            border: 3px solid #0f766e; /* Acento verde */
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+        }
+        .circulo-interior {
+            width: 120px; height: 120px;
+            border-radius: 50%;
+            background-color: #8a1538; /* Carmesí */
+            color: white;
+            display: flex; align-items: center; justify-content: center;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            box-shadow: 0 10px 15px -3px rgba(138, 21, 56, 0.4);
+            z-index: 10;
+        }
+        .etiqueta-circulo {
+            position: absolute;
+            background: white;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
-
+        /* Animaciones */
+        .fade-in { animation: fadeIn 0.5s ease-in; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
-        /* Utilidades Generales para Gráficos */
-        .chart-container-fluid {
-            position: relative;
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto;
-            height: 350px;
+        
+        /* Conectores Ecosistema */
+        .ecosistema-arrow {
+            position: absolute;
+            width: 2px;
+            background-color: #cbd5e1;
+            z-index: -1;
         }
-        @media (min-width: 768px) { .chart-container-fluid { height: 400px; } }
-
-        /* Estilos Interactivos File 1 */
-        .approach-btn { transition: all 0.3s ease; }
-        .approach-btn.active {
-            background-color: #b91c1c; /* Red 700 */
-            color: white;
-            border-color: #b91c1c;
-            box-shadow: 0 4px 6px -1px rgba(185, 28, 28, 0.5);
-        }
-        .step-content { display: none; animation: fadeIn 0.5s ease-in-out; }
-        .step-content.active { display: block; }
-        .morin-card { transition: transform 0.3s ease, border-color 0.3s ease; }
-        .morin-card:hover { transform: translateY(-5px); border-color: #b91c1c; }
-
-        /* Estilos Interactivos File 2 */
-        .nav-item { transition: all 0.3s ease; border-left: 4px solid transparent; }
-        .nav-item.active { background-color: #F1F5F9; border-left-color: #1e3a8a; font-weight: 600; color: #1e3a8a; } /* Blue 900 */
-        .section-content { display: none; animation: fadeIn 0.5s ease-in-out; }
-        .section-content.active { display: block; }
-        .concept-block { border: 1px solid #E2E8F0; border-radius: 0.5rem; padding: 1rem; background: white; text-align: center; cursor: pointer; transition: all 0.3s; }
-        .concept-block:hover { border-color: #1e3a8a; background-color: #eff6ff; }
-
-        /* Estilos Interactivos File 3 */
-        .file3-wrapper {
-            background-color: #fdfbf7;
-            color: #1f2937;
-        }
-        .file3-wrapper .nav-btn.active { background-color: #4b5563; color: white; border-bottom: 4px solid #b91c1c; }
-        .file3-wrapper .fade-in { animation: fadeIn 0.5s ease-in-out; }
-        .file3-wrapper .interactive-card { transition: all 0.3s ease; cursor: pointer; }
-        .file3-wrapper .interactive-card:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
-        .file3-wrapper .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .file3-wrapper .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="antialiased flex flex-col min-h-screen">
+<body class="bg-sillar-50 text-sillar-800 font-sans antialiased">
 
-    <div class="file1-wrapper pt-1">
-        <nav class="sticky top-0 z-50 bg-white border-b-2 border-blue-900 shadow-sm opacity-95">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between h-16">
-                    <div class="flex items-center">
-                        <span class="text-xl font-bold text-blue-900">Psiconecta</span>
-                        <span class="ml-2 text-xs bg-red-100 text-red-700 px-2 py-1 rounded font-bold hidden sm:inline-block border border-red-200">Revisión de Casos</span>
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-arequipa-carmesi/20 shadow-sm">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-2">
+                    <div class="w-10 h-10 bg-arequipa-carmesi rounded-lg flex items-center justify-center text-white font-bold shadow-md">
+                        <i class="fa-solid fa-archway"></i> <!-- Símbolo arquería sillar -->
                     </div>
-                    <div class="hidden md:flex space-x-6 items-center">
-                        <a href="#epistemologia" class="text-slate-600 hover:text-red-700 text-sm font-medium transition-colors">Epistemología</a>
-                        <a href="#enfoques" class="text-slate-600 hover:text-red-700 text-sm font-medium transition-colors">5 Enfoques</a>
-                        <a href="#morin" class="text-slate-600 hover:text-red-700 text-sm font-medium transition-colors">Complejidad Dialéctica</a>
-                        <a href="#dialectica" class="text-slate-600 hover:text-red-700 text-sm font-medium transition-colors">Comunidad</a>
-                        <a href="#recursos" class="text-red-700 font-bold text-sm hover:text-red-800 transition-colors">Recursos</a>
-                    </div>
+                    <span class="font-bold text-xl tracking-tight text-arequipa-carmesiDark">Bienestar Urbano <span class="font-normal text-sillar-800">AQp</span></span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#vision" class="text-sillar-800 hover:text-arequipa-carmesi transition font-medium">Visión</a>
+                    <a href="#graficas" class="text-sillar-800 hover:text-arequipa-carmesi transition font-medium">El Modelo</a>
+                    <a href="#metodologia" class="text-sillar-800 hover:text-arequipa-carmesi transition font-medium">Metodología</a>
+                    <a href="#cronograma" class="text-sillar-800 hover:text-arequipa-carmesi transition font-medium">Cronograma</a>
+                    <!-- Añadido el enlace a descargas en el menú -->
+                    <a href="#descarga" class="text-arequipa-carmesi font-bold hover:text-arequipa-carmesiDark transition">Descargar PDF</a>
                 </div>
             </div>
-        </nav>
+        </div>
+    </nav>
 
-        <header class="bg-blue-900 pb-16 pt-12 border-b-4 border-red-700">
-            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <h1 class="text-4xl tracking-tight font-extrabold text-white sm:text-5xl md:text-6xl">
-                    <span class="block">La Postura Integrativa</span>
-                    <span class="block text-red-400 mt-2">en la Clínica Contemporánea</span>
-                </h1>
-                <p class="mt-6 max-w-2xl mx-auto text-lg text-blue-100">
-                    Un análisis epistemológico que trasciende la nosología del DSM-5 y CIE-11. Integramos la psicopatología descriptiva con la escucha biográfica, la salud mental comunitaria y la dialéctica de la complejidad.
-                </p>
-                <div class="mt-8 flex justify-center gap-4">
-                    <button onclick="document.getElementById('recursos').scrollIntoView({behavior: 'smooth'})" class="px-8 py-3 border border-transparent text-base font-bold rounded-md text-white bg-red-700 hover:bg-red-800 md:py-4 md:text-lg transition-colors shadow-lg">
-                        Ver Guías y Casos
-                    </button>
-                </div>
-            </div>
-        </header>
-
-        <section id="epistemologia" class="py-16 bg-slate-50">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl font-extrabold text-blue-900 inline-block border-b-2 border-red-500 pb-1">Epistemología de la Complejidad</h2>
-                    <p class="mt-4 max-w-3xl mx-auto text-xl text-slate-600">
-                        El "Diagnóstico" (SCID-5, CIE-11) es solo una dimensión. La "Construcción del Caso" es un volumen.
-                    </p>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                    <div class="prose prose-slate">
-                        <h3 class="text-red-700 font-bold text-2xl mb-4">De la Etiqueta a la Trama</h3>
-                        <p class="mb-4 leading-relaxed">
-                            Los manuales como el <strong>DSM-5</strong> y la <strong>CIE-11</strong> nos proveen un lenguaje común necesario para la comunicación interdisciplinaria. Sin embargo, una postura puramente taxonómica cae en el reduccionismo.
-                        </p>
-                        <p class="mb-4 leading-relaxed">
-                            La <strong>Complejidad</strong> nos exige pensar en bucles. El síntoma no es solo una disfunción biológica, es un <em>mensaje existencial</em> en un <em>contexto histórico-cultural</em>.
-                        </p>
-                        <ul class="list-none space-y-3 mt-6">
-                            <li class="flex items-start">
-                                <span class="flex-shrink-0 w-2 h-2 mt-2 bg-red-600 rounded-full mr-3"></span>
-                                <span><strong>Nivel Nosológico:</strong> Criterios operativos (SCID-5). Necesario, no suficiente.</span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="flex-shrink-0 w-2 h-2 mt-2 bg-blue-900 rounded-full mr-3"></span>
-                                <span><strong>Nivel Biográfico:</strong> El significado personal del sufrimiento.</span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="flex-shrink-0 w-2 h-2 mt-2 bg-blue-900 rounded-full mr-3"></span>
-                                <span><strong>Nivel Comunitario:</strong> La red de vínculos y el territorio.</span>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
-                        <h4 class="text-center font-bold text-blue-900 mb-4 uppercase text-sm tracking-widest">Alcance de la Formulación Clínica</h4>
-                        <div class="chart-container-fluid">
-                            <canvas id="epistemologyChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="enfoques" class="py-16 bg-white border-t border-slate-200">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="mb-10 text-center md:text-left">
-                    <h2 class="text-3xl font-extrabold text-blue-900">La Pentada Terapéutica</h2>
-                    <p class="mt-4 text-lg text-slate-500">
-                        Ningún enfoque agota la realidad del paciente. Supervisamos la clínica tejiendo estos 5 hilos en una intervención coherente.
-                    </p>
-                </div>
-
-                <div class="flex flex-wrap gap-2 mb-8 justify-center lg:justify-start" id="approachTabs">
-                    <button class="approach-btn active px-5 py-2 rounded-full border border-red-700 font-bold text-sm shadow-sm" data-target="psicodinamico">1. Psicodinámico</button>
-                    <button class="approach-btn px-5 py-2 rounded-full border border-slate-300 text-slate-600 hover:bg-slate-100 hover:text-blue-900 font-medium text-sm" data-target="historico">2. Histórico-Cultural</button>
-                    <button class="approach-btn px-5 py-2 rounded-full border border-slate-300 text-slate-600 hover:bg-slate-100 hover:text-blue-900 font-medium text-sm" data-target="cognitivo">3. Cognitivo-Conductual</button>
-                    <button class="approach-btn px-5 py-2 rounded-full border border-slate-300 text-slate-600 hover:bg-slate-100 hover:text-blue-900 font-medium text-sm" data-target="gestaltico">4. Gestáltico</button>
-                    <button class="approach-btn px-5 py-2 rounded-full border border-slate-300 text-slate-600 hover:bg-slate-100 hover:text-blue-900 font-medium text-sm" data-target="existencial">5. Existencial</button>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div class="lg:col-span-1 bg-blue-900 p-8 rounded-xl shadow-xl h-full flex flex-col justify-center text-white relative overflow-hidden">
-                        <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-red-600 rounded-full opacity-20"></div>
-                        <h3 id="approachTitle" class="text-2xl font-bold text-white mb-4 z-10">Abordaje Psicodinámico</h3>
-                        <p id="approachDesc" class="text-blue-100 mb-6 z-10 leading-relaxed">
-                            Foco en el conflicto intrapsíquico, las defensas y la transferencia. Analiza cómo el pasado inconsciente estructura el síntoma presente. En la integración, aporta la profundidad sobre los patrones vinculares repetitivos.
-                        </p>
-                        <div class="mt-auto z-10 border-t border-blue-700 pt-4">
-                            <span class="text-xs font-bold text-red-400 uppercase tracking-wide">Aporte al Caso:</span>
-                            <p id="approachContribution" class="text-sm text-white mt-1 italic">
-                                "¿Qué escena temida se está repitiendo en la relación terapéutica?"
-                            </p>
-                        </div>
-                    </div>
-                    <div class="lg:col-span-2">
-                        <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
-                            <div class="chart-container-fluid">
-                                <canvas id="approachesChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="morin" class="py-16 bg-slate-100 border-t border-slate-200">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <span class="text-red-600 font-bold tracking-wider uppercase text-sm">Fundamento Filosófico</span>
-                    <h2 class="text-3xl font-extrabold text-blue-900 mt-2">Dialéctica de la Complejidad</h2>
-                    <p class="mt-4 text-slate-600 max-w-2xl mx-auto">
-                        Aplicando los principios de <strong>Edgar Morin</strong> para romper el reduccionismo clínico. El sujeto no es una lista de síntomas, es un sistema dinámico.
-                    </p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="morin-card bg-white p-8 rounded-xl shadow-md border-t-4 border-blue-900 relative overflow-hidden group">
-                        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><span class="text-6xl font-serif font-bold text-blue-900">1</span></div>
-                        <h3 class="text-xl font-bold text-blue-900 mb-3 group-hover:text-red-700 transition-colors">Principio Dialógico</h3>
-                        <p class="text-sm text-slate-500 mb-4 font-semibold uppercase tracking-wide">Orden / Desorden</p>
-                        <p class="text-slate-600 leading-relaxed mb-6">Une dos lógicas antagónicas que son, a la vez, inseparables. El sistema mantiene su estabilidad (homeostasis) a través del cambio constante.</p>
-                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-100">
-                            <strong class="text-red-700 text-sm block mb-1">En la Clínica:</strong>
-                            <p class="text-sm text-slate-700 italic">"El síntoma (desorden) está intentando organizar una nueva forma de equilibrio (orden) en la vida del paciente."</p>
-                        </div>
-                    </div>
-
-                    <div class="morin-card bg-white p-8 rounded-xl shadow-md border-t-4 border-red-600 relative overflow-hidden group">
-                        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><span class="text-6xl font-serif font-bold text-red-900">2</span></div>
-                        <h3 class="text-xl font-bold text-blue-900 mb-3 group-hover:text-red-700 transition-colors">Principio Recursivo</h3>
-                        <p class="text-sm text-slate-500 mb-4 font-semibold uppercase tracking-wide">Causa ⟷ Efecto</p>
-                        <p class="text-slate-600 leading-relaxed mb-6">Rompe la causalidad lineal. El efecto se vuelve causa de lo que lo produjo. Somos producto y productores de nuestra historia.</p>
-                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-100">
-                            <strong class="text-red-700 text-sm block mb-1">En la Clínica:</strong>
-                            <p class="text-sm text-slate-700 italic">"La ansiedad genera aislamiento, y el aislamiento incrementa la ansiedad. Intervenimos en el bucle recursivo."</p>
-                        </div>
-                    </div>
-
-                    <div class="morin-card bg-white p-8 rounded-xl shadow-md border-t-4 border-blue-900 relative overflow-hidden group">
-                        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><span class="text-6xl font-serif font-bold text-blue-900">3</span></div>
-                        <h3 class="text-xl font-bold text-blue-900 mb-3 group-hover:text-red-700 transition-colors">Principio Hologramático</h3>
-                        <p class="text-sm text-slate-500 mb-4 font-semibold uppercase tracking-wide">Parte ⟷ Todo</p>
-                        <p class="text-slate-600 leading-relaxed mb-6">La parte está en el todo, y el todo está en la parte. Cada detalle clínico contiene la totalidad de la estructura del sujeto y su cultura.</p>
-                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-100">
-                            <strong class="text-red-700 text-sm block mb-1">En la Clínica:</strong>
-                            <p class="text-sm text-slate-700 italic">"En cómo el paciente saluda o paga la sesión (parte) se refleja toda su estructura de personalidad (todo)."</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="dialectica" class="py-16 bg-slate-900 text-white relative">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                    <div>
-                        <h2 class="text-3xl font-extrabold text-red-500">Salud Mental Comunitaria</h2>
-                        <p class="mt-4 text-slate-300 text-lg">
-                            Aplicando la dialéctica al territorio: La recuperación no es lineal. Es un proceso de tensión entre la aceptación de la vulnerabilidad y la movilización del cambio.
-                        </p>
-                        <div class="mt-8 space-y-6">
-                            <div class="flex items-start">
-                                <div class="flex-shrink-0"><span class="flex items-center justify-center h-12 w-12 rounded-full bg-blue-800 text-blue-200 font-bold border border-blue-600">A</span></div>
-                                <div class="ml-4">
-                                    <h4 class="text-lg font-bold text-white">Hospital vs. Territorio</h4>
-                                    <p class="text-slate-400 text-sm mt-1">El hospital estabiliza la crisis (DSM-5/Farmacología), pero la recuperación ocurre en la comunidad.</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start">
-                                <div class="flex-shrink-0"><span class="flex items-center justify-center h-12 w-12 rounded-full bg-red-900 text-red-200 font-bold border border-red-700">B</span></div>
-                                <div class="ml-4">
-                                    <h4 class="text-lg font-bold text-white">Síntoma vs. Sentido</h4>
-                                    <p class="text-slate-400 text-sm mt-1">Mientras el CIE-11 clasifica el déficit, la mirada existencial busca el sentido del sufrimiento.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-slate-800 p-2 rounded-xl shadow-2xl border border-slate-700">
-                        <div class="bg-slate-900 rounded-t-lg p-3 text-center border-b border-slate-700">
-                            <h4 class="font-bold text-blue-200 text-sm uppercase tracking-wider">Matriz de Recuperación</h4>
-                        </div>
-                        <div id="dialecticsPlot" style="width:100%; height:400px;"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="construccion" class="py-16 bg-slate-50">
-            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl font-extrabold text-blue-900">La Construcción del Caso</h2>
-                    <p class="mt-4 text-slate-600">
-                        La metodología de investigación en la clínica es la construcción del caso individual. No aplicamos un protocolo estándar; construimos una hipótesis de trabajo única.
-                    </p>
-                </div>
-
-                <div class="relative">
-                    <div class="absolute left-8 top-0 h-full w-1 bg-slate-200 hidden md:block"></div>
-                    <div class="space-y-8">
-                        <div class="relative flex flex-col md:flex-row gap-6 cursor-pointer bg-white p-6 rounded-lg shadow-sm hover:shadow-md hover:border-l-4 hover:border-red-600 transition-all group" onclick="toggleStep(1)">
-                            <div class="flex-shrink-0 flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 text-blue-900 border-4 border-white shadow-sm z-10 text-xl font-bold group-hover:bg-red-100 group-hover:text-red-700 transition-colors">1</div>
-                            <div class="flex-1">
-                                <h3 class="text-xl font-bold text-blue-900 group-hover:text-red-700 transition-colors">Escucha Biográfica y Fenomenológica</h3>
-                                <p class="text-slate-500 mt-1 text-sm">Más allá de la anamnesis médica.</p>
-                                <div id="step-1" class="step-content mt-4 text-slate-700 text-sm border-t pt-3 border-slate-100">
-                                    <p class="mb-2"><strong>Herramientas:</strong> Entrevista abierta, epoché (suspensión del juicio).</p>
-                                    <p>No buscamos signos para llenar la SCID-5 inmediatamente. Buscamos la narrativa del paciente. ¿Cómo vive el tiempo? ¿Cómo vive su cuerpo? (Gestalt/Existencial). Aquí detectamos el motivo de consulta latente vs. manifiesto.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="relative flex flex-col md:flex-row gap-6 cursor-pointer bg-white p-6 rounded-lg shadow-sm hover:shadow-md hover:border-l-4 hover:border-red-600 transition-all group" onclick="toggleStep(2)">
-                            <div class="flex-shrink-0 flex items-center justify-center h-16 w-16 rounded-full bg-slate-100 text-slate-700 border-4 border-white shadow-sm z-10 text-xl font-bold group-hover:bg-red-100 group-hover:text-red-700 transition-colors">2</div>
-                            <div class="flex-1">
-                                <h3 class="text-xl font-bold text-blue-900 group-hover:text-red-700 transition-colors">Diagnóstico Operativo y Estructural</h3>
-                                <p class="text-slate-500 mt-1 text-sm">Integración de Manuales (DSM/CIE) y Estructura.</p>
-                                <div id="step-2" class="step-content mt-4 text-slate-700 text-sm border-t pt-3 border-slate-100">
-                                    <p class="mb-2"><strong>Herramientas:</strong> SCID-5, Guía DSM-5, Criterios CIE-11.</p>
-                                    <p>Utilizamos los textos fuente para delimitar la gravedad y comunicar con otros profesionales. Identificamos si es Neurosis, Psicosis o Perversión (Psicodinámico) y comorbilidades. El diagnóstico no define al sujeto, orienta la farmacología y el riesgo.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="relative flex flex-col md:flex-row gap-6 cursor-pointer bg-white p-6 rounded-lg shadow-sm hover:shadow-md hover:border-l-4 hover:border-red-600 transition-all group" onclick="toggleStep(3)">
-                            <div class="flex-shrink-0 flex items-center justify-center h-16 w-16 rounded-full bg-slate-100 text-slate-700 border-4 border-white shadow-sm z-10 text-xl font-bold group-hover:bg-red-100 group-hover:text-red-700 transition-colors">3</div>
-                            <div class="flex-1">
-                                <h3 class="text-xl font-bold text-blue-900 group-hover:text-red-700 transition-colors">Análisis Funcional y Contextual</h3>
-                                <p class="text-slate-500 mt-1 text-sm">La lógica del síntoma en su entorno.</p>
-                                <div id="step-3" class="step-content mt-4 text-slate-700 text-sm border-t pt-3 border-slate-100">
-                                    <p class="mb-2"><strong>Herramientas:</strong> Análisis de cadenas conductuales (TCC), Mapa de Red (Histórico-Cultural).</p>
-                                    <p>¿Qué mantiene el síntoma? (Refuerzos). ¿Qué función cumple en la familia o comunidad? (Sistémico/Histórico-Cultural). Aquí analizamos la ZDP (Zona de Desarrollo Próximo) para el cambio.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="relative flex flex-col md:flex-row gap-6 cursor-pointer bg-white p-6 rounded-lg shadow-sm hover:shadow-md hover:border-l-4 hover:border-red-600 transition-all group" onclick="toggleStep(4)">
-                            <div class="flex-shrink-0 flex items-center justify-center h-16 w-16 rounded-full bg-slate-100 text-slate-700 border-4 border-white shadow-sm z-10 text-xl font-bold group-hover:bg-red-100 group-hover:text-red-700 transition-colors">4</div>
-                            <div class="flex-1">
-                                <h3 class="text-xl font-bold text-blue-900 group-hover:text-red-700 transition-colors">Plan de Tratamiento Transdisciplinar</h3>
-                                <p class="text-slate-500 mt-1 text-sm">La estrategia integrativa en acción.</p>
-                                <div id="step-4" class="step-content mt-4 text-slate-700 text-sm border-t pt-3 border-slate-100">
-                                    <p class="mb-2"><strong>Acción:</strong> Intervención en Red.</p>
-                                    <p>Diseñamos intervenciones que tocan los 5 enfoques:<br>- Trabajo del trauma (Psicodinámico)<br>- Activación conductual (TCC)<br>- Acompañamiento terapéutico/Comunitario (Hist-Cult)<br>- Resignificación existencial (Existencial)</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="recursos" class="py-16 bg-white border-t-2 border-slate-200">
-            <div class="max-w-5xl mx-auto px-4 text-center">
-                <h2 class="text-3xl font-extrabold text-blue-900 mb-8 border-b-4 border-red-600 inline-block pb-1">Recursos y Material de Apoyo</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
-                    <a href="https://drive.google.com/drive/folders/1ARlLcnicPijX9413BFjiLSrLXP0Ua05B?usp=sharing" target="_blank" class="group block bg-blue-900 rounded-xl p-10 shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-2 border-2 border-blue-900 hover:border-blue-700 relative overflow-hidden">
-                        <div class="absolute top-0 right-0 p-4 opacity-10">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z" />
-                            </svg>
-                        </div>
-                        <div class="relative z-10">
-                            <h3 class="text-3xl font-bold text-white mb-2 group-hover:text-blue-200 transition-colors">Clínica Psicológica</h3>
-                            <p class="text-blue-200 text-lg font-medium mb-6">Revisión de Casos</p>
-                            <span class="inline-flex items-center bg-blue-700 text-white font-bold py-2 px-6 rounded-full group-hover:bg-white group-hover:text-blue-900 transition-colors shadow-lg">
-                                Acceder al Drive
-                                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                            </span>
-                        </div>
-                    </a>
-
-                    <a href="#" class="group block bg-red-700 rounded-xl p-10 shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-2 border-2 border-red-700 hover:border-red-500 relative overflow-hidden">
-                        <div class="absolute top-0 right-0 p-4 opacity-10">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                        </div>
-                        <div class="relative z-10">
-                             <h3 class="text-3xl font-bold text-white mb-2 group-hover:text-red-100 transition-colors">Guía Psiconecta</h3>
-                             <p class="text-red-100 text-lg font-medium mb-6">Serums 2026</p>
-                             <span class="inline-flex items-center bg-red-900 text-white font-bold py-2 px-6 rounded-full group-hover:bg-white group-hover:text-red-700 transition-colors shadow-lg">
-                                Descargar PDF
-                                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                             </span>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <hr class="border-t-4 border-slate-300 shadow-sm">
-
-    <div class="file2-wrapper flex flex-col md:flex-row bg-slate-50">
-        <aside class="w-full md:w-64 bg-white border-r border-gray-200 shadow-sm flex-shrink-0 z-10">
-            <div class="p-6 border-b border-gray-100">
-                <h1 class="text-xl font-bold text-blue-900 leading-tight">Epistemología de la Complejidad</h1>
-                <p class="text-xs text-gray-500 mt-2">Investigación Interactiva en Salud Mental</p>
-            </div>
-            <nav class="p-4 space-y-1">
-                <button onclick="navigate('intro')" id="nav-intro" class="nav-item w-full text-left px-4 py-3 rounded text-sm text-gray-700 hover:bg-gray-50 active">
-                    1. El Paradigma de la Complejidad
-                </button>
-                <button onclick="navigate('triad')" id="nav-triad" class="nav-item w-full text-left px-4 py-3 rounded text-sm text-gray-700 hover:bg-gray-50">
-                    2. El Nexo Psicopatológico
-                </button>
-                <button onclick="navigate('crisis')" id="nav-crisis" class="nav-item w-full text-left px-4 py-3 rounded text-sm text-gray-700 hover:bg-gray-50">
-                    3. Crisis de Causalidad (s. XX)
-                </button>
-                <button onclick="navigate('models')" id="nav-models" class="nav-item w-full text-left px-4 py-3 rounded text-sm text-gray-700 hover:bg-gray-50">
-                    4. Engel vs. Moncrief
-                </button>
-                <button onclick="navigate('personality')" id="nav-personality" class="nav-item w-full text-left px-4 py-3 rounded text-sm text-gray-700 hover:bg-gray-50">
-                    5. Personalidad y Cultura
-                </button>
-                <button onclick="navigate('method')" id="nav-method" class="nav-item w-full text-left px-4 py-3 rounded text-sm text-gray-700 hover:bg-gray-50">
-                    6. Método: Ontología vs. Epistemología
-                </button>
-            </nav>
-        </aside>
-
-        <main class="flex-1 p-4 md:p-8 overflow-y-auto">
-            <section id="intro" class="section-content active max-w-4xl mx-auto">
-                <header class="mb-8">
-                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Hacia una Psiquiatría de la Complejidad</h2>
-                    <div class="h-1 w-20 bg-blue-700 rounded"></div>
-                </header>
-
-                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 mb-8">
-                    <p class="text-lg text-gray-700 leading-relaxed mb-4">
-                        <strong>Introducción:</strong> Esta sección establece el marco teórico fundamental. Basado en el pensamiento de <strong>Edgar Morin</strong>, la salud mental no puede entenderse desde el reduccionismo (explicar el todo solo por sus partes). Debemos adoptar el principio de <em>Unitas Multiplex</em>: la unidad en la diversidad.
-                    </p>
-                    <p class="text-gray-600">
-                        A continuación, interactúe con el radar epistemológico para visualizar cómo el paradigma de la complejidad integra dimensiones que la psiquiatría clásica a menudo fragmenta.
-                    </p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
-                        <h3 class="font-semibold text-center mb-4 text-blue-900">Comparativa de Modelos</h3>
-                        <div class="chart-container-fluid">
-                            <canvas id="complexityRadar"></canvas>
-                        </div>
-                        <div class="text-center mt-4 text-sm text-gray-500 italic">
-                            El modelo complejo (Morin) busca expandir el área de comprensión abarcando todas las dimensiones.
-                        </div>
-                    </div>
-
-                    <div class="space-y-4">
-                        <div class="concept-block text-left hover:bg-white cursor-default border-slate-200">
-                            <h4 class="font-bold text-blue-800">Recursividad Organizacional</h4>
-                            <p class="text-sm text-gray-600">La causa actúa sobre el efecto, y el efecto retroactúa sobre la causa. La mente no es solo producto del cerebro, sino que la cultura moldea el cerebro.</p>
-                        </div>
-                        <div class="concept-block text-left hover:bg-white cursor-default border-slate-200">
-                            <h4 class="font-bold text-blue-800">Principio Hologramático</h4>
-                            <p class="text-sm text-gray-600">La parte está en el todo, y el todo está en la parte. Cada síntoma psicopatológico contiene la historia total del sujeto.</p>
-                        </div>
-                        <div class="concept-block text-left hover:bg-white cursor-default border-slate-200">
-                            <h4 class="font-bold text-blue-800">Dialógica</h4>
-                            <p class="text-sm text-gray-600">Orden y desorden (salud y enfermedad) son enemigos, pero colaboran. La crisis es necesaria para la reorganización del sistema.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="triad" class="section-content max-w-4xl mx-auto">
-                <header class="mb-8">
-                    <h2 class="text-3xl font-bold text-gray-800 mb-2">El Eslabón Perdido: La Psicopatología</h2>
-                    <div class="h-1 w-20 bg-red-600 rounded"></div>
-                </header>
-
-                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 mb-8">
-                    <p class="text-lg text-gray-700 leading-relaxed">
-                        <strong>Contexto:</strong> Para que la Psiquiatría exista como ciencia médica y no mera farmacología aplicada, requiere de la <strong>Psicopatología</strong> (el estudio del <em>pathos</em>, el sufrimiento psíquico). Esta investigación postula que la psicopatología se nutre obligatoriamente de tres áreas de la psicología.
-                    </p>
-                    <p class="text-sm text-gray-500 mt-2">Explore el diagrama interactivo para ver las contribuciones de cada área.</p>
-                </div>
-
-                <div class="relative bg-gray-50 p-8 rounded-xl border border-gray-200 min-h-[500px] flex flex-col items-center justify-center">
-                    <div id="psychiatry-box" class="bg-blue-900 text-white p-4 rounded-lg shadow-lg w-64 text-center z-10 transition-all duration-300 transform hover:scale-105">
-                        <h3 class="font-bold text-xl">PSIQUIATRÍA</h3>
-                        <p class="text-xs text-slate-300 mt-1">Praxis médica & Terapéutica</p>
-                    </div>
-
-                    <div class="h-8 w-1 bg-slate-400 my-1"></div>
-                    <div class="text-xs text-gray-500 rotate-90 transform origin-center tracking-widest">REQUIERE</div>
-                    <div class="h-8 w-1 bg-slate-400 my-1"></div>
-
-                    <div id="psychopathology-box" class="bg-red-700 text-white p-6 rounded-full w-48 h-48 flex flex-col items-center justify-center shadow-xl z-10 ring-4 ring-red-100 transition-all duration-300">
-                        <h3 class="font-bold text-lg">PSICOPATOLOGÍA</h3>
-                        <p class="text-xs text-red-100 mt-2 text-center">Fundamento y Descripción del Sufrimiento</p>
-                    </div>
-
-                    <div class="w-full max-w-2xl flex justify-between mt-4 relative">
-                        <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-4 w-3/4 h-8 border-l-2 border-r-2 border-t-2 border-dashed border-gray-400 rounded-t-3xl -z-0"></div>
-                        <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-4 w-0 h-8 border-l-2 border-dashed border-gray-400 -z-0"></div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 w-full max-w-3xl z-10">
-                        <div class="bg-white p-4 rounded border-l-4 border-red-500 shadow hover:bg-red-50 cursor-pointer transition-colors" onclick="showDetail('clinical')">
-                            <h4 class="font-bold text-gray-800">1. Psicología Clínica</h4>
-                            <p class="text-xs text-gray-500 mt-1">El método, la técnica y la relación terapéutica.</p>
-                            <button class="mt-2 text-xs text-red-700 font-semibold">Ver aporte ></button>
-                        </div>
-                        <div class="bg-white p-4 rounded border-l-4 border-blue-500 shadow hover:bg-blue-50 cursor-pointer transition-colors" onclick="showDetail('health')">
-                            <h4 class="font-bold text-gray-800">2. Psicología de la Salud</h4>
-                            <p class="text-xs text-gray-500 mt-1">Prevención, estilos de vida y contexto sanitario.</p>
-                            <button class="mt-2 text-xs text-blue-700 font-semibold">Ver aporte ></button>
-                        </div>
-                        <div class="bg-white p-4 rounded border-l-4 border-blue-800 shadow hover:bg-blue-50 cursor-pointer transition-colors" onclick="showDetail('personality')">
-                            <h4 class="font-bold text-gray-800">3. Psic. de la Personalidad</h4>
-                            <p class="text-xs text-gray-500 mt-1">Diferencias individuales y estructura del sujeto.</p>
-                            <button class="mt-2 text-xs text-blue-800 font-semibold">Ver aporte ></button>
-                        </div>
-                    </div>
-
-                    <div id="triad-detail" class="mt-6 w-full bg-blue-50 p-4 rounded border border-blue-200 text-sm text-gray-700 hidden">
-                        <span id="triad-text">Seleccione un área para ver los detalles.</span>
-                    </div>
-                </div>
-            </section>
-
-            <section id="crisis" class="section-content max-w-4xl mx-auto">
-                <header class="mb-8">
-                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Dificultades Epistemológicas del S. XX</h2>
-                    <div class="h-1 w-20 bg-red-700 rounded"></div>
-                </header>
-
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div class="lg:col-span-1 space-y-4">
-                        <p class="text-gray-700 text-sm leading-relaxed">
-                            Durante el siglo XX, la <strong>psiquiatría biológica</strong> prometió encontrar la "lesión" específica para cada trastorno mental, emulando el éxito de la medicina general.
-                        </p>
-                        <p class="text-gray-700 text-sm leading-relaxed">
-                            Sin embargo, surgió una <strong>brecha epistemológica</strong>: mientras la tecnología de observación avanzaba exponencialmente, la confirmación de una causalidad lineal (gen -> enfermedad) permaneció esquiva.
-                        </p>
-                        <div class="bg-red-50 p-4 rounded border-l-4 border-red-600">
-                            <h4 class="font-bold text-red-800 text-sm">La Falacia de Causalidad</h4>
-                            <p class="text-xs text-red-700 mt-1">Correlación neurobiológica ≠ Causa suficiente. La complejidad implica que lo biológico es condición necesaria pero no suficiente.</p>
-                        </div>
-                    </div>
-
-                    <div class="lg:col-span-2">
-                        <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
-                            <h3 class="text-center font-semibold text-gray-700 mb-4">La Paradoja Tecnológica</h3>
-                            <div class="chart-container-fluid">
-                                <canvas id="causalityChart"></canvas>
-                            </div>
-                            <p class="text-center text-xs text-gray-400 mt-2">Representación conceptual de la brecha entre avance técnico y certeza etiológica.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="p-4 bg-white rounded shadow-sm">
-                        <h4 class="font-bold text-gray-800 mb-2">Problema 1: Heterogeneidad</h4>
-                        <p class="text-sm text-gray-600">Pacientes con el mismo diagnóstico (ej. Depresión Mayor) presentan perfiles biológicos completamente distintos.</p>
-                    </div>
-                    <div class="p-4 bg-white rounded shadow-sm">
-                        <h4 class="font-bold text-gray-800 mb-2">Problema 2: Comorbilidad</h4>
-                        <p class="text-sm text-gray-600">La regla en clínica es la mezcla de cuadros, lo que desafía la idea de "entidades naturales" discretas biológicamente determinadas.</p>
-                    </div>
-                </div>
-            </section>
-
-            <section id="models" class="section-content max-w-4xl mx-auto">
-                <header class="mb-8">
-                    <h2 class="text-3xl font-bold text-gray-800 mb-2">La Batalla de los Modelos</h2>
-                    <div class="h-1 w-20 bg-blue-600 rounded"></div>
-                </header>
-
-                <div class="bg-blue-50 p-6 rounded-lg mb-8 text-blue-900 border border-blue-200">
-                    <p>
-                        <strong>Análisis:</strong> El modelo Bio-Psico-Social de George Engel intentó una integración, pero a menudo se convirtió en "Bio-bio-bio" en la práctica. Joanna Moncrief (Psiquiatría Crítica) ofrece una alternativa radical rechazando la teoría del desequilibrio químico.
-                    </p>
-                </div>
-
-                <div class="flex justify-center mb-6 space-x-4">
-                    <button onclick="switchModel('engel')" id="btn-engel" class="px-6 py-2 rounded-full font-bold transition-colors bg-blue-800 text-white shadow-lg">Modelo Bio-Psico-Social (Engel)</button>
-                    <button onclick="switchModel('moncrief')" id="btn-moncrief" class="px-6 py-2 rounded-full font-bold transition-colors bg-white text-gray-600 border border-gray-300 hover:bg-gray-50">Crítica de Moncrief</button>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="bg-white p-6 rounded shadow border-t-4 border-gray-300" id="model-text-card">
-                        <h3 class="text-xl font-bold mb-4" id="model-title">Modelo Bio-Psico-Social</h3>
-                        <ul class="space-y-3 text-sm text-gray-700" id="model-list"></ul>
-                    </div>
-                    <div class="bg-white p-4 rounded shadow border border-gray-200">
-                        <h4 class="text-center font-semibold text-gray-600 mb-2">Foco de la Intervención Terapéutica</h4>
-                        <div class="chart-container-fluid">
-                            <canvas id="modelBarChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mt-8 bg-blue-50 p-4 rounded border-l-4 border-blue-600">
-                    <h4 class="font-bold text-blue-900">Punto Crítico: El mito del Desequilibrio Químico</h4>
-                    <p class="text-sm text-blue-800 mt-1">
-                        Moncrief argumenta que los psicofármacos no "arreglan" un desequilibrio subyacente (modelo centrado en la enfermedad), sino que crean un estado alterado de conciencia que puede ser útil o no (modelo centrado en el fármaco).
-                    </p>
-                </div>
-            </section>
-
-            <section id="personality" class="section-content max-w-4xl mx-auto">
-                <header class="mb-8">
-                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Subjetividad y Sistema</h2>
-                    <div class="h-1 w-20 bg-red-800 rounded"></div>
-                </header>
-
-                <div class="mb-6">
-                     <p class="text-gray-700 mb-4">
-                        Para superar el reduccionismo, integramos la <strong>Psicología Histórico-Cultural (Fernando González Rey)</strong> y la <strong>Teoría del Sistema Sociopsicobiológico (Pedro Ortiz Cabanillas)</strong>. Ambos rescatan al sujeto activo.
-                    </p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden group">
-                        <div class="bg-red-800 p-4 text-white">
-                            <h3 class="font-bold text-lg">Fernando González Rey</h3>
-                            <p class="text-xs opacity-80">La Subjetividad Social e Individual</p>
-                        </div>
-                        <div class="p-6">
-                            <div class="mb-4">
-                                <span class="inline-block bg-red-100 text-red-800 text-xs px-2 py-1 rounded mb-2">Concepto Clave</span>
-                                <h4 class="font-bold text-gray-800">El Principio de la Personalidad</h4>
-                            </div>
-                            <p class="text-sm text-gray-600 mb-4">
-                                La psique no es un reflejo pasivo de lo social ni una secreción biológica. Es una <strong>configuración subjetiva</strong> donde las emociones y los procesos simbólicos se organizan de forma única en cada individuo a través de su historia.
-                            </p>
-                            <div class="bg-red-50 p-3 rounded text-xs text-red-900 italic">
-                                "Lo psíquico es generador de sentido subjetivo."
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-                        <div class="bg-blue-800 p-4 text-white">
-                            <h3 class="font-bold text-lg">Pedro Ortiz Cabanillas</h3>
-                            <p class="text-xs opacity-80">Teoría Informacional</p>
-                        </div>
-                        <div class="p-6 relative">
-                            <div class="space-y-1">
-                                <div class="w-full bg-blue-100 border border-blue-300 p-2 text-center text-xs font-bold text-blue-900 rounded hover:bg-blue-200 transition-colors tooltip-trigger">Nivel Social (Conciencia)</div>
-                                <div class="w-full flex justify-center"><span class="text-gray-400 text-xs">↓ Codificación en Neocórtex ↓</span></div>
-                                <div class="w-3/4 mx-auto bg-blue-50 border border-blue-200 p-2 text-center text-xs font-bold text-blue-800 rounded hover:bg-blue-100 transition-colors tooltip-trigger">Nivel Psíquico</div>
-                                <div class="w-2/3 mx-auto bg-red-100 border border-red-300 p-2 text-center text-xs font-bold text-red-900 rounded hover:bg-red-200 transition-colors tooltip-trigger">Nivel Funcional/Orgánico</div>
-                                <div class="w-1/2 mx-auto bg-gray-100 border border-gray-300 p-2 text-center text-xs font-bold text-gray-600 rounded">Nivel Celular</div>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-4 text-center">
-                                Para Ortiz, el ser humano es un sistema donde la <strong>información social</strong> reestructura el cerebro (epigénesis). No somos "cerebros con patas", somos sociedad encarnada.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="method" class="section-content max-w-4xl mx-auto">
-                <header class="mb-8">
-                    <h2 class="text-3xl font-bold text-gray-800 mb-2">La Clínica como Método</h2>
-                    <div class="h-1 w-20 bg-slate-600 rounded"></div>
-                </header>
-
-                <div class="bg-white p-6 rounded-lg shadow mb-8">
-                    <p class="text-gray-700 mb-4">
-                        Un error fundamental en psiquiatría es confundir el <strong>mapa</strong> (epistemología/diagnóstico) con el <strong>territorio</strong> (ontología/realidad del paciente).
-                    </p>
-                    <p class="text-sm text-gray-500">Clasifique los siguientes conceptos haciendo clic en ellos para entender la diferencia.</p>
-                </div>
-
-                <div class="grid grid-cols-2 gap-8">
-                    <div class="text-center">
-                        <h3 class="font-bold text-slate-700 mb-4 border-b pb-2">Nivel Epistemológico</h3>
-                        <p class="text-xs text-slate-500 mb-4">(Cómo conocemos/nombramos)</p>
-                        <div id="epist-container" class="min-h-[200px] bg-slate-50 border-2 border-dashed border-slate-300 rounded p-4 flex flex-col gap-2 transition-colors"></div>
-                    </div>
-
-                    <div class="text-center">
-                        <h3 class="font-bold text-blue-800 mb-4 border-b pb-2">Nivel Ontológico</h3>
-                        <p class="text-xs text-blue-600 mb-4">(Qué es/existe realmente)</p>
-                        <div id="onto-container" class="min-h-[200px] bg-blue-50 border-2 border-dashed border-blue-300 rounded p-4 flex flex-col gap-2 transition-colors"></div>
-                    </div>
-                </div>
-
-                <div class="mt-8 text-center">
-                    <h4 class="text-sm font-bold text-gray-400 mb-3">Conceptos a Clasificar (Haga clic para mover):</h4>
-                    <div class="flex flex-wrap justify-center gap-3" id="item-pool">
-                        <button onclick="moveItem(this, 'epist')" class="px-4 py-2 bg-white border border-gray-300 shadow-sm rounded-full hover:bg-slate-100 text-sm font-medium">Diagnóstico DSM-5</button>
-                        <button onclick="moveItem(this, 'onto')" class="px-4 py-2 bg-white border border-gray-300 shadow-sm rounded-full hover:bg-blue-100 text-sm font-medium">Sinapsis Neuronal</button>
-                        <button onclick="moveItem(this, 'onto')" class="px-4 py-2 bg-white border border-gray-300 shadow-sm rounded-full hover:bg-blue-100 text-sm font-medium">Conducta Observable</button>
-                        <button onclick="moveItem(this, 'epist')" class="px-4 py-2 bg-white border border-gray-300 shadow-sm rounded-full hover:bg-slate-100 text-sm font-medium">Constructo Teórico</button>
-                        <button onclick="moveItem(this, 'onto')" class="px-4 py-2 bg-white border border-gray-300 shadow-sm rounded-full hover:bg-blue-100 text-sm font-medium">Sufrimiento Vivido</button>
-                        <button onclick="moveItem(this, 'epist')" class="px-4 py-2 bg-white border border-gray-300 shadow-sm rounded-full hover:bg-slate-100 text-sm font-medium">Estadística Epidemiológica</button>
-                    </div>
-                    <p id="feedback-msg" class="mt-4 text-sm font-bold h-6 text-blue-600"></p>
-                </div>
-            </section>
-        </main>
-    </div>
-
-    <hr class="border-t-4 border-slate-300 shadow-sm">
-
-    <div class="file3-wrapper flex flex-col flex-grow">
-        <header id="header-parte3" class="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
-            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-                <div>
-                    <h1 class="text-xl md:text-2xl font-bold text-gray-800 tracking-tight">Crítica de la Razón Psiquiátrica</h1>
-                    <p class="text-xs md:text-sm text-gray-500 font-medium">Un Análisis Epistemológico y Político</p>
-                </div>
-                <button id="intro-btn" class="hidden md:block text-sm font-semibold text-red-700 hover:text-red-900 transition" onclick="app.resetToHome()">
-                    Volver al Inicio
-                </button>
-            </div>
-        </header>
-
-        <nav class="bg-gray-100 border-b border-gray-300 overflow-x-auto hide-scrollbar">
-            <div class="max-w-6xl mx-auto flex whitespace-nowrap px-2 md:px-0">
-                <button onclick="app.loadSection('home')" class="nav-btn active px-6 py-4 text-sm font-semibold text-gray-600 hover:bg-gray-200 transition focus:outline-none" id="nav-home">
-                    Introducción
-                </button>
-                <button onclick="app.loadSection('sujeto')" class="nav-btn px-6 py-4 text-sm font-semibold text-gray-600 hover:bg-gray-200 transition focus:outline-none" id="nav-sujeto">
-                    1. Renuncia del Sujeto
-                </button>
-                <button onclick="app.loadSection('epistemologia')" class="nav-btn px-6 py-4 text-sm font-semibold text-gray-600 hover:bg-gray-200 transition focus:outline-none" id="nav-epistemologia">
-                    2. El Error Científico
-                </button>
-                <button onclick="app.loadSection('falacia')" class="nav-btn px-6 py-4 text-sm font-semibold text-gray-600 hover:bg-gray-200 transition focus:outline-none" id="nav-falacia">
-                    3. Falacia Psiquiátrica
-                </button>
-                <button onclick="app.loadSection('politica')" class="nav-btn px-6 py-4 text-sm font-semibold text-gray-600 hover:bg-gray-200 transition focus:outline-none" id="nav-politica">
-                    4. Política Manicomial
-                </button>
-            </div>
-        </nav>
-
-        <main class="flex-grow max-w-5xl mx-auto w-full px-4 sm:px-6 py-8" id="content-area">
-            </main>
-
-        <template id="tmpl-home">
-            <div class="space-y-8 fade-in">
-                <div class="text-center py-10">
-                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4 serif">Investigación Crítica</h2>
-                    <p class="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
-                        Este panel interactivo presenta una deconstrucción de los fundamentos actuales de la salud mental hegemónica. Analizamos cómo el positivismo ha desplazado al sujeto, cómo la psiquiatría se apropia indebidamente de la ciencia, y los valores políticos ocultos detrás de las prácticas manicomiales en Perú y Latinoamérica.
-                    </p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-red-700 interactive-card" onclick="app.loadSection('sujeto')">
-                        <h3 class="text-xl font-bold mb-2">1. El Sujeto Ausente</h3>
-                        <p class="text-gray-600 text-sm">Cómo las ciencias cognitivas redujeron la mente a un procesador de información, eliminando la experiencia subjetiva.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-yellow-600 interactive-card" onclick="app.loadSection('epistemologia')">
-                        <h3 class="text-xl font-bold mb-2">2. El Monopolio Científico</h3>
-                        <p class="text-gray-600 text-sm">Crítica al error de considerar que "solo lo medible" es científico en el estudio de la psique humana.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-600 interactive-card" onclick="app.loadSection('falacia')">
-                        <h3 class="text-xl font-bold mb-2">3. La Coartada TCC</h3>
-                        <p class="text-gray-600 text-sm">La falacia de la psiquiatría biológica que utiliza la eficacia de la terapia cognitiva para validar el modelo médico.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-700 interactive-card" onclick="app.loadSection('politica')">
-                        <h3 class="text-xl font-bold mb-2">4. Política Oculta</h3>
-                        <p class="text-gray-600 text-sm">Análisis del valor político de control social detrás de las posturas manicomiales en Perú y Latinoamérica.</p>
-                    </div>
-                </div>
-            </div>
-        </template>
+    <!-- Hero Section con Arequipa Vibe -->
+    <header id="vision" class="relative bg-white overflow-hidden pb-10">
+        <!-- Textura Sillar / Fondo -->
+        <div class="absolute inset-0 z-0 opacity-5 bg-[radial-gradient(#8a1538_1px,transparent_1px)] [background-size:20px_20px]"></div>
+        <div class="bg-misti"></div> <!-- Misti silhouette -->
         
-        <footer class="bg-gray-800 text-gray-300 py-8 mt-12">
-            <div class="max-w-6xl mx-auto px-4 text-center">
-                <p class="mb-2 font-serif italic">"La ciencia que ignora al sujeto no estudia al humano, sino a un autómata."</p>
-                <p class="text-xs text-gray-500">Generado para análisis crítico. Basado en las tesis de epistemología crítica latinoamericana.</p>
+        <div class="container mx-auto px-4 py-16 sm:py-24 relative z-10 text-center max-w-5xl mx-auto">
+            <span class="inline-block px-4 py-1.5 rounded-full bg-arequipa-carmesi/10 text-arequipa-carmesi text-sm font-bold mb-6 tracking-widest uppercase border border-arequipa-carmesi/20">
+                MPA | Gerencia de Desarrollo Social | Universidades de Arequipa
+            </span>
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-serif font-black text-sillar-800 mb-6 leading-tight">
+                Desarrollo de Promotores Urbanos de <span class="text-transparent bg-clip-text bg-gradient-to-r from-arequipa-carmesi to-arequipa-carmesiLight">Bienestar Social</span>
+            </h1>
+            <p class="text-base sm:text-1g text-sillar-800 mb-10 leading-relaxed max-w-3xl mx-auto font-medium bg-white/60 p-4 rounded-xl backdrop-blur-sm">
+                Hacia una Arequipa líder en Salud Mental Comunitaria e Intersectorial. <br>
+                Una propuesta estratégica para convertir el espacio urbano en un escenario terapéutico, hacia nuestro Quinto Centenario. La transformación de los espacios urbanos en entornos terapéuticos constituye uno de los desafíos más complejos de la sociología urbana contemporánea y la salud pública. El proyecto "Desarrollo de Promotores Urbanos de Bienestar Social", concebido por la Municipalidad Provincial de Arequipa (MPA) en articulación con importantes universidades de Arequipa y las Organizaciones Sociales de Base (OSB), propone una reestructuración del abordaje clínico tradicional. Bajo la premisa de transitar "del consultorio al barrio", esta iniciativa busca descentralizar la atención psicológica, insertándola en el tejido mismo de la cotidianidad ciudadana: plazas, mercados y barrios tradicionales.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#graficas" class="inline-flex justify-center items-center px-8 py-3 font-bold rounded-lg text-white bg-arequipa-carmesi hover:bg-arequipa-carmesiDark transition shadow-lg hover:shadow-xl hover:-translate-y-1">
+                    <i class="fa-solid fa-map-location-dot mr-2"></i> Explorar el Modelo
+                </a>
             </div>
-        </footer>
-    </div>
+        </div>
+    </header>
 
-    <section class="py-12 bg-white border-t border-slate-200 text-center">
-        <div class="max-w-4xl mx-auto px-4">
-            <a href="#" class="inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all bg-red-700 border border-transparent rounded-full shadow-lg hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-700">
-                Haz click aquí para accesar a las 100 fuentes bibliográficas revisadas
-            </a>
+    <!-- Sección de Gráficas Recreadas del PDF -->
+    <section id="graficas" class="py-20 bg-sillar-100 border-t border-sillar-200">
+        <div class="container mx-auto px-4">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl font-bold text-arequipa-carmesiDark mb-4 font-serif">Transformando Desafíos Urbanos</h2>
+                <p class="text-sillar-800 font-medium">Del consultorio al barrio: Integración de los espacios de la Ciudad Blanca.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                
+                <!-- Gráfica 1: Ecosistema Urbano (Recreación PDF) -->
+                <div class="bg-white p-8 rounded-2xl shadow-md border border-sillar-200 relative overflow-hidden">
+                    <h3 class="text-center font-bold text-lg mb-8 text-sillar-800 uppercase tracking-wide">Ecosistema de Integración</h3>
+                    
+                    <div class="relative w-full h-[300px] flex items-center justify-center">
+                        <!-- Nodo Central -->
+                        <div class="absolute z-10 bg-sillar-50 border-2 border-arequipa-carmesi w-28 h-28 rounded-xl flex flex-col items-center justify-center shadow-lg">
+                            <i class="fa-solid fa-tree-city text-3xl text-arequipa-carmesi mb-2"></i>
+                            <span class="font-bold text-sm text-sillar-800">COMUNIDAD</span>
+                        </div>
+                        
+                        <!-- Nodo Arriba Derecha (Barrios) -->
+                        <div class="absolute top-4 right-4 bg-orange-50 border-2 border-orange-400 w-28 h-24 rounded-xl flex flex-col items-center justify-center shadow">
+                            <i class="fa-solid fa-house-chimney-window text-2xl text-orange-500 mb-1"></i>
+                            <span class="font-bold text-xs text-center leading-tight text-sillar-800">BARRIOS<br>ORGANIZACIONES</span>
+                        </div>
+
+                        <!-- Nodo Abajo Izquierda (Mercados) -->
+                        <div class="absolute bottom-4 left-4 bg-emerald-50 border-2 border-emerald-500 w-28 h-24 rounded-xl flex flex-col items-center justify-center shadow">
+                            <i class="fa-solid fa-store text-2xl text-emerald-600 mb-1"></i>
+                            <span class="font-bold text-xs text-sillar-800">MERCADOS</span>
+                        </div>
+
+                        <!-- Nodo Abajo Derecha (Bienestar) -->
+                        <div class="absolute bottom-4 right-4 bg-oro/10 border-2 border-oro w-28 h-24 rounded-xl flex flex-col items-center justify-center shadow">
+                            <i class="fa-solid fa-people-group text-2xl text-oro mb-1"></i>
+                            <span class="font-bold text-xs text-center leading-tight text-sillar-800">BIENESTAR<br>COLECTIVO</span>
+                        </div>
+
+                        <!-- Conectores visuales (SVG Arrows) -->
+                        <svg class="absolute inset-0 w-full h-full z-0 pointer-events-none" style="overflow: visible;">
+                            <line x1="50%" y1="50%" x2="80%" y2="20%" stroke="#ca8a04" stroke-width="3" stroke-dasharray="5,5" />
+                            <line x1="50%" y1="50%" x2="20%" y2="80%" stroke="#0f766e" stroke-width="3" stroke-dasharray="5,5" />
+                            <line x1="50%" y1="50%" x2="80%" y2="80%" stroke="#8a1538" stroke-width="3" stroke-dasharray="5,5" />
+                            <line x1="20%" y1="80%" x2="80%" y2="80%" stroke="#94a3b8" stroke-width="2" />
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Gráfica 2: Red de Soporte Barrial (Recreación PDF) -->
+                <div class="bg-white p-8 rounded-2xl shadow-md border border-sillar-200 flex flex-col items-center">
+                    <h3 class="text-center font-bold text-lg mb-8 text-sillar-800 uppercase tracking-wide">La Triada del Cambio / Soporte</h3>
+                    
+                    <!-- Círculos Concéntricos CSS -->
+                    <div class="circulo-exterior">
+                        <span class="etiqueta-circulo text-oro" style="top: -15px;">Comunidad / Barrio</span>
+                        
+                        <div class="circulo-medio">
+                            <span class="etiqueta-circulo text-acentoVerde" style="top: -15px;">Lideresas OSB (Vaso de Leche)</span>
+                            
+                            <div class="circulo-interior relative group">
+                                <div class="absolute inset-0 bg-arequipa-carmesi rounded-full animate-ping opacity-20"></div>
+                                <span>Estudiante<br>(Promotor)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 text-center bg-arequipa-carmesi/5 p-4 rounded-lg border border-arequipa-carmesi/10">
+                        <p class="text-sm font-bold text-arequipa-carmesi mb-1">Estrategia:</p>
+                        <p class="text-sm text-sillar-800">Transformación de receptores de ayuda a "Agentes de Bienestar Urbano". El conocimiento se queda en el barrio.</p>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </section>
 
-    <footer class="bg-blue-900 py-10">
-        <div class="max-w-7xl mx-auto px-4 text-center text-blue-200 text-sm">
-            <p>&copy; 2026 Plataforma de Supervisión Clínica Integrativa.</p>
-            <p class="mt-2">Basado en análisis de SCID-5, CIE-11, DSM-5 y Psicopatología Clínica.</p>
+    <!-- Metodología Paso a Paso (Recreación Gráfica PDF) -->
+    <section id="metodologia" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-arequipa-carmesiDark font-serif mb-4">Metodología de Intervención: Paso a Paso</h2>
+                <p class="text-sillar-800">Integración total con la Ley N.º 30364 para la Erradicación de la Violencia.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Paso 1 -->
+                <div class="relative p-6 bg-sillar-50 rounded-2xl border-t-4 border-oro shadow-sm hover:shadow-md transition">
+                    <div class="w-16 h-16 bg-white border-2 border-oro rounded-full flex items-center justify-center mb-4 text-oro absolute -top-8 left-6">
+                        <i class="fa-solid fa-map-location-dot text-2xl"></i> <!-- Icono Lupa/Mapa -->
+                    </div>
+                    <h3 class="font-bold text-lg mt-6 mb-2 text-sillar-800">Mes 1: Mapeo y Potencia</h3>
+                    <p class="text-sm text-sillar-800 leading-relaxed">Identificar liderazgos activos. "La Mesa del Barrio". Uso del "Mapa Parlante".</p>
+                </div>
+
+                <!-- Paso 2 -->
+                <div class="relative p-6 bg-sillar-50 rounded-2xl border-t-4 border-acentoVerde shadow-sm hover:shadow-md transition mt-8 md:mt-0">
+                    <div class="w-16 h-16 bg-white border-2 border-acentoVerde rounded-full flex items-center justify-center mb-4 text-acentoVerde absolute -top-8 left-6">
+                        <i class="fa-solid fa-file-handshake text-2xl"></i> <!-- Icono Documento/Manos -->
+                    </div>
+                    <h3 class="font-bold text-lg mt-6 mb-2 text-sillar-800">Mes 2: Capacidades</h3>
+                    <p class="text-sm text-sillar-800 leading-relaxed">Talleres "Entre Pares". Capacitación en el uso de la Guía. Espacios de descarga emocional.</p>
+                </div>
+
+                <!-- Paso 3 -->
+                <div class="relative p-6 bg-sillar-50 rounded-2xl border-t-4 border-arequipa-carmesi shadow-sm hover:shadow-md transition mt-8 md:mt-0">
+                    <div class="w-16 h-16 bg-white border-2 border-arequipa-carmesi rounded-full flex items-center justify-center mb-4 text-arequipa-carmesi absolute -top-8 left-6">
+                        <i class="fa-solid fa-bullhorn text-2xl"></i> <!-- Icono Megáfono -->
+                    </div>
+                    <h3 class="font-bold text-lg mt-6 mb-2 text-sillar-800">Mes 3: Articulación</h3>
+                    <p class="text-sm text-sillar-800 leading-relaxed">Sistemas de Alerta Temprana (WhatsApp vecinal). Campañas ("Plato Lleno, Corazón Contento").</p>
+                </div>
+
+                <!-- Paso 4 -->
+                <div class="relative p-6 bg-sillar-50 rounded-2xl border-t-4 border-sillar-800 shadow-sm hover:shadow-md transition mt-8 md:mt-0">
+                    <div class="w-16 h-16 bg-white border-2 border-sillar-800 rounded-full flex items-center justify-center mb-4 text-sillar-800 absolute -top-8 left-6">
+                        <i class="fa-solid fa-gavel text-2xl"></i> <!-- Icono Mazo/Justicia -->
+                    </div>
+                    <h3 class="font-bold text-lg mt-6 mb-2 text-sillar-800">Mes 4: Autonomía</h3>
+                    <p class="text-sm text-sillar-800 leading-relaxed">Mesas de diálogo de Salud Mental. Las OSB presentan necesidades a la Municipalidad.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cronograma Maestro Integrado (Diagrama Gantt CSS) -->
+    <section id="cronograma" class="py-20 bg-sillar-100 border-t border-sillar-200">
+        <div class="container mx-auto px-4">
+            <div class="mb-12 text-center">
+                <h2 class="text-3xl font-bold text-arequipa-carmesiDark font-serif mb-4">Cronograma Maestro Integrado</h2>
+                <p class="text-sillar-800 max-w-2xl mx-auto font-medium">
+                    11 Meses para institucionalizar el bienestar social en Arequipa.
+                </p>
+            </div>
+
+            <!-- Tabla Visual Tipo Gantt CSS -->
+            <div class="bg-white rounded-2xl shadow-lg border border-sillar-200 overflow-x-auto p-6">
+                <div class="min-w-[800px]">
+                    <!-- Cabecera Meses -->
+                    <div class="grid grid-cols-12 gap-1 mb-4 border-b-2 border-arequipa-carmesi pb-2">
+                        <div class="col-span-2 font-bold text-sillar-800 uppercase text-xs">Fase / Tarea</div>
+                        <div class="col-span-1 text-center font-bold text-arequipa-carmesi text-xs">M1</div>
+                        <div class="col-span-1 text-center font-bold text-arequipa-carmesi text-xs">M2</div>
+                        <div class="col-span-1 text-center font-bold text-arequipa-carmesi text-xs">M3</div>
+                        <div class="col-span-1 text-center font-bold text-arequipa-carmesi text-xs">M4</div>
+                        <div class="col-span-1 text-center font-bold text-arequipa-carmesi text-xs">M5</div>
+                        <div class="col-span-1 text-center font-bold text-arequipa-carmesi text-xs">M6</div>
+                        <div class="col-span-1 text-center font-bold text-arequipa-carmesi text-xs">M7</div>
+                        <div class="col-span-1 text-center font-bold text-arequipa-carmesi text-xs">M8</div>
+                        <div class="col-span-1 text-center font-bold text-arequipa-carmesi text-xs">M9</div>
+                        <div class="col-span-1 text-center font-bold text-arequipa-carmesi text-xs">M10</div>
+                        <div class="col-span-1 text-center font-bold text-arequipa-carmesi text-xs hidden">M11</div> <!-- Ajuste para cuadrícula -->
+                    </div>
+
+                    <!-- Fila 1 -->
+                    <div class="grid grid-cols-12 gap-1 items-center mb-3">
+                        <div class="col-span-2 text-xs font-bold text-sillar-800">Gestión y Alianzas</div>
+                        <div class="col-span-1 bg-oro rounded-md h-6 shadow-sm flex items-center justify-center text-[10px] text-white font-bold">M1</div>
+                        <div class="col-span-9"></div>
+                    </div>
+
+                    <!-- Fila 2 -->
+                    <div class="grid grid-cols-12 gap-1 items-center mb-3">
+                        <div class="col-span-2 text-xs font-bold text-sillar-800">Formación Teórica</div>
+                        <div class="col-span-1"></div>
+                        <div class="col-span-3 bg-acentoVerde rounded-md h-6 shadow-sm flex items-center justify-center text-[10px] text-white font-bold px-2 whitespace-nowrap overflow-hidden">Chalecos (M4)</div>
+                        <div class="col-span-7"></div>
+                    </div>
+
+                    <!-- Fila 3 -->
+                    <div class="grid grid-cols-12 gap-1 items-center mb-3">
+                        <div class="col-span-2 text-xs font-bold text-sillar-800">Piloto y Asignación</div>
+                        <div class="col-span-4"></div>
+                        <div class="col-span-1 bg-blue-500 rounded-md h-6 shadow-sm flex items-center justify-center text-[10px] text-white font-bold">M5</div>
+                        <div class="col-span-6"></div>
+                    </div>
+
+                    <!-- Fila 4 -->
+                    <div class="grid grid-cols-12 gap-1 items-center mb-3">
+                        <div class="col-span-2 text-xs font-bold text-sillar-800">Intervención Territorial</div>
+                        <div class="col-span-5"></div>
+                        <div class="col-span-5 bg-arequipa-carmesi rounded-md h-6 shadow-sm flex items-center justify-center text-[10px] text-white font-bold relative">
+                            M6 - M10
+                            <span class="absolute -top-6 bg-sillar-800 text-white text-[9px] px-1 rounded">Mapa Parlante (M6)</span>
+                            <span class="absolute -bottom-6 bg-sillar-800 text-white text-[9px] px-1 rounded">Cabildo (M9)</span>
+                        </div>
+                    </div>
+
+                    <!-- Fila 5 -->
+                    <div class="grid grid-cols-12 gap-1 items-center">
+                        <div class="col-span-2 text-xs font-bold text-sillar-800">Evaluación y Cierre</div>
+                        <div class="col-span-10 flex justify-end">
+                            <div class="w-1/12 bg-sillar-800 rounded-md h-6 shadow-sm flex items-center justify-center text-[10px] text-white font-bold relative">
+                                M11
+                                <span class="absolute -top-6 right-0 bg-oro text-sillar-800 text-[9px] font-bold px-1 rounded whitespace-nowrap">Ordenanza Municipal</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Impacto (Chart.js adaptado) -->
+    <section class="py-20 bg-white border-t border-sillar-200">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <span class="text-oro font-bold uppercase tracking-wider text-sm">Academia + RSU</span>
+                    <h2 class="text-3xl font-bold text-arequipa-carmesiDark font-serif mt-2 mb-6">Producción Científica</h2>
+                    <p class="text-sillar-800 mb-6 font-medium">
+                        La Municipalidad pone el territorio; la Universidad pone la evidencia. La data extraída de las OSB permitirá publicaciones científicas indexadas sobre acceso, discapacidad, y burnout en zonas urbanas de Arequipa.
+                    </p>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3 bg-sillar-50 p-3 rounded-lg border border-sillar-200">
+                            <div class="w-8 h-8 rounded-full bg-arequipa-carmesi/10 flex items-center justify-center text-arequipa-carmesi"><i class="fa-solid fa-seedling"></i></div>
+                            <span class="text-sm font-bold text-sillar-800">Ejemplo 1: Biohuertos de Sanación (Acción RSU)</span>
+                        </li>
+                        <li class="flex items-center gap-3 bg-sillar-50 p-3 rounded-lg border border-sillar-200">
+                            <div class="w-8 h-8 rounded-full bg-arequipa-carmesi/10 flex items-center justify-center text-arequipa-carmesi"><i class="fa-solid fa-palette"></i></div>
+                            <span class="text-sm font-bold text-sillar-800">Ejemplo 2: Arte Urbano: Prevención suicidio jóvenes</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-sillar-50 p-6 rounded-2xl shadow-inner border border-sillar-200">
+                    <h3 class="text-center font-bold text-sillar-800 mb-4">Distribución del Esfuerzo Formativo (180 Hrs)</h3>
+                    <div class="relative w-full h-[300px]">
+                        <canvas id="timeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- N U E V A   S E C C I Ó N : Descargar PDF -->
+    <section id="descarga" class="py-16 bg-sillar-100 border-t border-sillar-200 relative overflow-hidden">
+        <!-- Detalle de fondo sutil -->
+        <div class="absolute inset-0 z-0 opacity-10 bg-[radial-gradient(#ca8a04_1px,transparent_1px)] [background-size:20px_20px]"></div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl border border-sillar-200 p-8 md:p-12 flex flex-col md:flex-row items-center gap-8 transform transition hover:shadow-2xl">
+                
+                <!-- Icono destacado -->
+                <div class="w-24 h-24 md:w-32 md:h-32 shrink-0 bg-arequipa-carmesi/10 rounded-full flex items-center justify-center border-4 border-arequipa-carmesi/20">
+                    <i class="fa-regular fa-file-pdf text-5xl md:text-6xl text-arequipa-carmesi"></i>
+                </div>
+                
+                <!-- Textos y Botón -->
+                <div class="flex-1 text-center md:text-left">
+                    <h2 class="text-3xl font-bold text-arequipa-carmesiDark font-serif mb-2">Documento Oficial del Proyecto</h2>
+                    <p class="text-sillar-800 font-medium mb-6">
+                        Accede al informe completo, la malla curricular y todos los detalles estratégicos y metodológicos del proyecto Promotores de Bienestar Urbano de Arequipa.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                        <!-- El atributo download indica al navegador que debe descargar el archivo -->
+                        <a href="Presentacion_Proyecto_Promotores_Bienestar_Urbano.pdf" download="Presentacion_Proyecto_Promotores_Bienestar_Urbano.pdf" class="inline-flex justify-center items-center px-8 py-3 font-bold rounded-lg text-white bg-arequipa-carmesi hover:bg-arequipa-carmesiDark transition shadow-lg hover:shadow-xl hover:-translate-y-1">
+                            <i class="fa-solid fa-download mr-2 text-xl"></i> Descargar Presentación
+                        </a>
+                    </div>
+                    <p class="text-xs text-sillar-500 mt-3 font-medium">Formato PDF | Documento Institucional MPA & Consorcio Universitario</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-arequipa-carmesiDark text-sillar-100 py-12 border-t-4 border-oro">
+        <div class="container mx-auto px-4 text-center">
+            <i class="fa-solid fa-archway text-4xl text-oro mb-4"></i>
+            <h2 class="text-2xl font-bold font-serif mb-2">Arequipa 2025: Un Hito Histórico</h2>
+            <p class="text-sillar-200 max-w-2xl mx-auto mb-8 text-sm">
+                A 10 años de la Reforma en Salud Mental y la Ley N.º 30364. Posicionando a Arequipa como referente latinoamericano de ciudad sostenible e inclusiva hacia el Quinto Centenario.
+            </p>
+            <div class="pt-8 border-t border-arequipa-carmesiLight text-xs text-sillar-200">
+                &copy; 2026 Municipalidad Provincial de Arequipa - Gerencia de Desarrollo Social.<br>
+                Consorcio Universitario de Arequipa.
+            </div>
         </div>
     </footer>
 
+    <!-- Script de Gráficos -->
     <script>
-        // --- SCRIPT FILE 1: REVISIÓN DE CASOS ---
-        window.addEventListener('DOMContentLoaded', function() {
-            const ctxEpistemology = document.getElementById('epistemologyChart').getContext('2d');
-            new Chart(ctxEpistemology, {
-                type: 'radar',
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gráfico Circular de Horas/Módulos
+            const ctxTime = document.getElementById('timeChart').getContext('2d');
+            new Chart(ctxTime, {
+                type: 'doughnut',
                 data: {
-                    labels: ['Nosología (Criterios)', 'Biografía/Historia', 'Contexto Social', 'Fenomenología', 'Neurobiología', 'Recursos Comunitarios'],
+                    labels: ['Bienestar & Sociedad', 'Prevención Violencia', 'Métodos (Guía)', 'Participación & OSB'],
                     datasets: [{
-                        label: 'Modelo Biomédico Tradicional', data: [90, 20, 10, 30, 85, 10], fill: true,
-                        backgroundColor: 'rgba(185, 28, 28, 0.1)', borderColor: 'rgba(185, 28, 28, 0.8)', pointBackgroundColor: 'rgba(185, 28, 28, 1)'
-                    }, {
-                        label: 'Postura Integrativa Compleja', data: [70, 90, 85, 80, 70, 90], fill: true,
-                        backgroundColor: 'rgba(30, 58, 138, 0.2)', borderColor: 'rgba(30, 58, 138, 1)', pointBackgroundColor: 'rgba(30, 58, 138, 1)'
+                        data: [25, 25, 30, 20],
+                        backgroundColor: [
+                            '#8a1538', // Carmesi
+                            '#ca8a04', // Oro
+                            '#0f766e', // Verde
+                            '#44403c'  // Gris oscuro
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#f5f5f4',
+                        hoverOffset: 5
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, elements: { line: { borderWidth: 3 } }, scales: { r: { angleLines: { display: false }, suggestedMin: 0, suggestedMax: 100, ticks: { display: false } } }, plugins: { legend: { position: 'bottom' } } }
-            });
-
-            const approachesData = {
-                'psicodinamico': { title: 'Abordaje Psicodinámico', desc: 'Foco en el conflicto intrapsíquico, defensas y transferencia.', contribution: '"¿Qué escena temida se repite? ¿Qué no se ha dicho en la historia oficial?"', chartData: [80, 20, 90, 40, 30] },
-                'historico': { title: 'Abordaje Histórico-Cultural', desc: 'Inspirado en Vygotsky. Énfasis en la comunidad.', contribution: '"¿Qué herramientas culturales median el sufrimiento?"', chartData: [50, 50, 20, 60, 100] },
-                'cognitivo': { title: 'Abordaje Cognitivo-Conductual', desc: 'Análisis de esquemas de pensamiento y conductas desadaptativas.', contribution: '"¿Qué distorsiones cognitivas mantienen el malestar?"', chartData: [10, 90, 10, 100, 40] },
-                'gestaltico': { title: 'Abordaje Gestáltico', desc: 'Enfoque en el "Aquí y Ahora" y la toma de conciencia.', contribution: '"¿Cómo interrumpe el paciente su contacto con la realidad actual?"', chartData: [0, 100, 40, 30, 50] },
-                'existencial': { title: 'Abordaje Existencial', desc: 'Foco en la libertad, la responsabilidad y el sentido.', contribution: '"¿Para qué vive el paciente? ¿Cómo asume su angustia?"', chartData: [30, 70, 50, 50, 60] }
-            };
-
-            const ctxApproaches = document.getElementById('approachesChart').getContext('2d');
-            let approachesChart = new Chart(ctxApproaches, {
-                type: 'bar',
-                data: {
-                    labels: ['Foco en Pasado', 'Foco en Presente', 'Profundidad Inconsciente', 'Estructura Cognitiva', 'Contexto/Social'],
-                    datasets: [{ label: 'Intensidad del Enfoque', data: approachesData['psicodinamico'].chartData, backgroundColor: ['rgba(30, 58, 138, 0.8)', 'rgba(30, 58, 138, 0.4)', 'rgba(185, 28, 28, 0.9)', 'rgba(30, 58, 138, 0.4)', 'rgba(30, 58, 138, 0.4)'], borderRadius: 4 }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, scales: { y: { max: 100 }, x: { grid: { display: false } } }, plugins: { legend: { display: false } } }
-            });
-
-            document.querySelectorAll('.approach-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    document.querySelectorAll('.approach-btn').forEach(b => { b.classList.remove('active'); b.classList.add('text-slate-600', 'border-slate-300'); });
-                    e.target.classList.remove('text-slate-600', 'border-slate-300'); e.target.classList.add('active');
-
-                    const data = approachesData[e.target.getAttribute('data-target')];
-                    document.getElementById('approachTitle').textContent = data.title;
-                    document.getElementById('approachDesc').textContent = data.desc;
-                    document.getElementById('approachContribution').textContent = data.contribution;
-
-                    approachesChart.data.datasets[0].data = data.chartData;
-                    approachesChart.data.datasets[0].backgroundColor = data.chartData.map(val => val === Math.max(...data.chartData) ? 'rgba(185, 28, 28, 0.9)' : 'rgba(30, 58, 138, 0.5)');
-                    approachesChart.update();
-                });
-            });
-
-            Plotly.newPlot('dialecticsPlot', [{ x: [10, 20, 80, 90, 50, 30, 85, 15], y: [20, 80, 85, 20, 50, 30, 90, 10], mode: 'markers', type: 'scatter', text: ['Crisis Aguda', 'Paradoja', 'Recuperación Plena', 'Adaptación', 'Proceso Medio', 'Aislamiento', 'Ciudadanía Plena', 'Cronificación'], marker: { size: 16, color: '#b91c1c', line: { color: 'white', width: 2 } } }], { title: false, xaxis: { title: 'Estabilidad Sintomática', range: [0, 100], gridcolor: '#334155' }, yaxis: { title: 'Integración Comunitaria', range: [0, 100], gridcolor: '#334155' }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', font: { color: '#cbd5e1' }, margin: { t: 20, b: 50, l: 60, r: 20 } }, {responsive: true, displayModeBar: false});
-
-            window.toggleStep = function(stepNum) {
-                document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
-                const content = document.getElementById(`step-${stepNum}`);
-                if (content) content.classList.add('active');
-            }
-            toggleStep(1);
-        });
-
-        // --- SCRIPT FILE 2: EPISTEMOLOGÍA ---
-        let currentModel = 'engel', radarChart = null, lineChart = null, barChart = null;
-        const modelData = {
-            'engel': { title: "Modelo Bio-Psico-Social (Engel)", list: `<li>✅ Integrar sistemas biológicos, psicológicos y sociales.</li><li>⚠️ En la práctica clínica real, a menudo lo biológico predomina.</li>`, data: [60, 25, 15], color: '#1e3a8a' },
-            'moncrief': { title: "Psiquiatría Crítica (Moncrief)", list: `<li>🚫 La teoría del desequilibrio químico es un mito.</li><li>🌍 Contextualización del sufrimiento y recuperación de significado.</li>`, data: [10, 50, 40], color: '#b91c1c' }
-        };
-
-        window.navigate = function(sectionId) {
-            document.querySelectorAll('.file2-wrapper .section-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.file2-wrapper .nav-item').forEach(el => el.classList.remove('active', 'bg-gray-50', 'border-l-4', 'border-blue-700'));
-            document.getElementById(sectionId).classList.add('active');
-            document.getElementById('nav-' + sectionId).classList.add('active');
-            if(sectionId === 'intro') renderRadar(); if(sectionId === 'crisis') renderLineChart();
-            if(sectionId === 'models') renderBarChart(currentModel);
-        }
-
-        window.renderRadar = function() {
-            if (radarChart) radarChart.destroy();
-            radarChart = new Chart(document.getElementById('complexityRadar').getContext('2d'), {
-                type: 'radar',
-                data: { labels: ['Biología', 'Cultura/Sociedad', 'Historia Biográfica', 'Subjetividad', 'Ecología/Contexto'], datasets: [{ label: 'Psiquiatría Biológica', data: [90, 20, 30, 10, 10], backgroundColor: 'rgba(30, 58, 138, 0.2)', borderColor: 'rgb(30, 58, 138)' }, { label: 'Paradigma de la Complejidad', data: [80, 85, 90, 95, 80], backgroundColor: 'rgba(185, 28, 28, 0.2)', borderColor: 'rgb(185, 28, 28)' }] },
-                options: { responsive: true, maintainAspectRatio: false, scales: { r: { suggestedMin: 0, suggestedMax: 100 } } }
-            });
-        }
-
-        window.showDetail = function(type) {
-            const detailBox = document.getElementById('triad-detail');
-            const detailText = document.getElementById('triad-text');
-            detailBox.classList.remove('hidden'); detailBox.classList.add('block', 'animate-pulse'); setTimeout(() => detailBox.classList.remove('animate-pulse'), 500);
-            if(type === 'clinical') { detailText.innerHTML = "<strong>Psicología Clínica:</strong> Aporta el método clínico.";
-                detailBox.className = "mt-6 w-full bg-red-50 p-4 rounded border border-red-200 text-sm text-gray-800";
-            }
-            else if(type === 'health') { detailText.innerHTML = "<strong>Psicología de la Salud:</strong> Vincula el trastorno con los estilos de vida.";
-                detailBox.className = "mt-6 w-full bg-blue-50 p-4 rounded border border-blue-200 text-sm text-gray-800";
-            }
-            else if(type === 'personality') { detailText.innerHTML = "<strong>Psicología de la Personalidad:</strong> Explica por qué el mismo estresor genera reacciones distintas.";
-                detailBox.className = "mt-6 w-full bg-blue-100 p-4 rounded border border-blue-300 text-sm text-gray-800";
-            }
-        }
-
-        window.renderLineChart = function() {
-            if (lineChart) return;
-            lineChart = new Chart(document.getElementById('causalityChart').getContext('2d'), {
-                type: 'line',
-                data: { labels: ['1950', '1970', '1990', '2010', '2024'], datasets: [{ label: 'Avance Tecnológico', data: [10, 30, 70, 90, 95], borderColor: '#1e3a8a', tension: 0.4 }, { label: 'Certeza Etiológica', data: [10, 15, 20, 25, 30], borderColor: '#b91c1c', borderDash: [5, 5], tension: 0.4 }] },
-                options: { responsive: true, maintainAspectRatio: false }
-            });
-        }
-
-        window.switchModel = function(model) {
-            currentModel = model;
-            document.getElementById('btn-engel').className = model === 'engel' ? "px-6 py-2 rounded-full font-bold transition-colors bg-blue-800 text-white shadow-lg" : "px-6 py-2 rounded-full font-bold transition-colors bg-white text-gray-600 border border-gray-300 hover:bg-gray-50";
-            document.getElementById('btn-moncrief').className = model === 'moncrief' ? "px-6 py-2 rounded-full font-bold transition-colors bg-red-700 text-white shadow-lg" : "px-6 py-2 rounded-full font-bold transition-colors bg-white text-gray-600 border border-gray-300 hover:bg-gray-50";
-            const info = modelData[model];
-            document.getElementById('model-title').textContent = info.title; document.getElementById('model-list').innerHTML = info.list;
-            document.getElementById('model-text-card').className = `bg-white p-6 rounded shadow border-t-4 ${model === 'engel' ? 'border-blue-700' : 'border-red-700'}`;
-            renderBarChart(model);
-        }
-
-        window.renderBarChart = function(model) {
-            if (barChart) barChart.destroy();
-            barChart = new Chart(document.getElementById('modelBarChart').getContext('2d'), {
-                type: 'bar',
-                data: { labels: ['Biológico (Fármacos)', 'Psicológico (Terapia)', 'Social (Contexto)'], datasets: [{ label: 'Peso en la Intervención (%)', data: modelData[model].data, backgroundColor: [model === 'engel' ? '#1e3a8a' : '#94a3b8', model === 'engel' ? '#1e3a8a' : '#b91c1c', model === 'engel' ? '#1e3a8a' : '#b91c1c'], borderWidth: 1 }] },
-                options: { responsive: true, maintainAspectRatio: false, scales: { y: { max: 100 } }, plugins: { legend: { display: false } } }
-            });
-        }
-
-        window.moveItem = function(btn, targetType) {
-            const correctAnswers = { 'Diagnóstico DSM-5': 'epist', 'Sinapsis Neuronal': 'onto', 'Conducta Observable': 'onto', 'Constructo Teórico': 'epist', 'Sufrimiento Vivido': 'onto', 'Estadística Epidemiológica': 'epist' };
-            const correctType = correctAnswers[btn.innerText];
-            const feedback = document.getElementById('feedback-msg');
-            if (targetType === correctType) {
-                btn.removeAttribute('onclick');
-                btn.classList.remove('bg-white'); btn.classList.add('bg-green-100', 'border-green-500', 'cursor-default');
-                (targetType === 'epist' ? document.getElementById('epist-container') : document.getElementById('onto-container')).appendChild(btn);
-                feedback.textContent = "¡Correcto!";
-                feedback.className = "mt-4 text-sm font-bold h-6 text-green-600";
-            } else {
-                feedback.textContent = "Intenta de nuevo. ¿Es el mapa o el territorio?";
-                feedback.className = "mt-4 text-sm font-bold h-6 text-red-500 animate-pulse";
-            }
-        }
-
-        // --- SCRIPT FILE 3: CRÍTICA (RESTAURADO) ---
-        const reportData = {
-            sujeto: {
-                title: "1. La Renuncia al Concepto de Sujeto",
-                intro: "La psiquiatría biológica en las ciencias cognitivas, en su afán por alcanzar el estatus de 'ciencia dura' bajo una epistemología positivista, ha operado una reducción drástica: ha sustituido al 'Sujeto' (ente de experiencia, historia y deseo) por el 'Procesador de Información'. Esta sección visualiza la magnitud de esta pérdida ontológica.",
-                details: "El modelo computacional de la mente asume que pensar es simplemente computar símbolos. Al hacerlo, se excluye deliberadamente la fenomenología (cómo se siente vivir), la intencionalidad inconsciente y el contexto cultural, tratándolos como 'ruido' o variables no científicas.",
-                chartConfig: {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Procesamiento de Datos (Cognitivismo)', 'Subjetividad/Historia (Eliminado)', 'Contexto Social (Minimizado)'],
-                        datasets: [{ data: [75, 20, 5], backgroundColor: ['#e5e7eb', '#b91c1c', '#9ca3af'], borderWidth: 0 }]
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: '#44403c', font: {family: 'Inter', weight: 'bold'} } }
                     },
-                    options: {
-                        responsive: true, maintainAspectRatio: false,
-                        plugins: {
-                            legend: { position: 'bottom' },
-                            title: { display: true, text: 'Enfoque de Investigación Cognitiva Promedio' },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        let label = context.label || '';
-                                        if (label) { label += ': '; }
-                                        if (context.parsed !== null) { label += context.parsed + '% de Enfoque'; }
-                                        return label;
-                                    },
-                                    afterBody: function(context) {
-                                        if(context[0].label.includes('Eliminado')) return ['CRÍTICA:', 'El positivismo considera lo subjetivo', 'como "no observable" y por ende', 'no científico.'];
-                                        if(context[0].label.includes('Cognitivismo')) return ['ENFOQUE:', 'Input -> Caja Negra -> Output.', 'Busca leyes universales,', 'ignorando la singularidad.'];
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    cutout: '65%'
                 }
-            },
-            epistemologia: {
-                title: "2. El Error Epistemológico: Monopolio de la Verdad",
-                intro: "Existe una creencia generalizada y errónea de que las Ciencias Cognitivas son la *única* vía científica para abordar la psicología humana. Esto constituye un reduccionismo epistemológico que confunde 'rigor metodológico' con 'adaptación al objeto de estudio'.",
-                details: "La psicología humana es un objeto complejo que posee dimensiones biológicas, pero también simbólicas, lingüísticas y sociales. Pretender estudiar todas estas dimensiones solo con las herramientas de las ciencias naturales (positivismo) recorta la realidad. A continuación, comparamos las capacidades de distintos enfoques.",
-                chartConfig: {
-                    type: 'radar',
-                    data: {
-                        labels: ['Predicción Conductual', 'Profundidad Subjetiva', 'Contexto Cultural', 'Mecanismos Biológicos', 'Agencia del Sujeto'],
-                        datasets: [{
-                            label: 'Ciencias Cognitivas (Positivista)', data: [90, 20, 30, 80, 40], fill: true,
-                            backgroundColor: 'rgba(55, 65, 81, 0.2)', borderColor: 'rgb(55, 65, 81)', pointBackgroundColor: 'rgb(55, 65, 81)'
-                        }, {
-                            label: 'Psicología Integral/Crítica', data: [50, 90, 95, 60, 95], fill: true,
-                            backgroundColor: 'rgba(185, 28, 28, 0.2)', borderColor: 'rgb(185, 28, 28)', pointBackgroundColor: 'rgb(185, 28, 28)'
-                        }]
-                    },
-                    options: {
-                        responsive: true, maintainAspectRatio: false, elements: { line: { tension: 0.3 } },
-                        scales: { r: { angleLines: { display: true }, suggestedMin: 0, suggestedMax: 100, ticks: { backdropColor: 'transparent' } } },
-                        plugins: { tooltip: { callbacks: { afterFooter: function(ctx) { return 'Nota: El modelo cognitivo sacrifica\nprofundidad por predictibilidad.'; } } } }
-                    }
-                }
-            },
-            falacia: {
-                title: "3. La Falacia de la Validación Psiquiátrica",
-                intro: "La psiquiatría biologicista a menudo carece de marcadores biológicos sólidos para sus diagnósticos (no hay un test de sangre para la depresión). Para sostener su estatus científico, realiza un préstamo de legitimidad de las Terapias Cognitivo Conductuales (TCC).",
-                details: "El argumento falaz funciona así: 'La TCC es científica y funciona -> La psiquiatría prescribe TCC -> Ergo, el modelo médico psiquiátrico es validado'. Esto ignora que la TCC funciona por mecanismos de aprendizaje y reestructuración, no necesariamente por corregir 'desequilibrios químicos' que la psiquiatría postula. Explore el diagrama lógico para ver la ruptura."
-            },
-            politica: {
-                title: "4. Valor Político: La Postura Manicomial en Perú/LatAm",
-                intro: "En Latinoamérica, y específicamente en Perú, la psiquiatría biologicista no opera en un vacío. Sus prácticas de encierro, medicación forzosa y diagnóstico masivo cumplen una función política oculta: el control de la disidencia y la gestión de la pobreza bajo el disfraz de 'salud pública'.",
-                details: "A pesar de las reformas legales (Ley de Salud Mental), la lógica manicomial persiste. No es solo un atraso técnico, es una estructura de poder. El hospital psiquiátrico funciona como un depósito de lo que el sistema social no puede integrar. Vea debajo de la superficie."
-            }
-        };
-
-        const app = {
-            state: {
-                currentChart: null
-            },
-
-            init: function() {
-                // Pasamos "true" para indicar que es la carga inicial y evitar el auto-scroll
-                this.loadSection('home', true);
-            },
-
-            resetToHome: function() {
-                this.loadSection('home');
-            },
-
-            loadSection: function(sectionId, isInit = false) {
-                document.querySelectorAll('.file3-wrapper .nav-btn').forEach(btn => btn.classList.remove('active'));
-                const activeBtn = document.getElementById(`nav-${sectionId}`);
-                if(activeBtn) activeBtn.classList.add('active');
-
-                const contentArea = document.getElementById('content-area');
-                if (this.state.currentChart) {
-                    this.state.currentChart.destroy();
-                    this.state.currentChart = null;
-                }
-
-                if (sectionId === 'home') {
-                    const template = document.getElementById('tmpl-home');
-                    contentArea.innerHTML = template.innerHTML;
-                } else if (sectionId === 'falacia') {
-                    this.renderFalacia(contentArea);
-                } else if (sectionId === 'politica') {
-                    this.renderPolitica(contentArea);
-                } else {
-                    this.renderStandardSection(contentArea, sectionId);
-                }
-
-                // === CORRECCIÓN DEL AUTO-SCROLL AL CARGAR LA PÁGINA ===
-                // Solo hace el scroll si NO es la inicialización (isInit es false)
-                if (!isInit) {
-                    const file3Container = document.getElementById('header-parte3');
-                    if(file3Container) {
-                        file3Container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                }
-            },
-
-            renderStandardSection: function(container, sectionId) {
-                const data = reportData[sectionId];
-                container.innerHTML = `
-                    <div class="fade-in space-y-8">
-                        <header class="border-b pb-6">
-                            <h2 class="text-3xl font-bold text-gray-800 mb-4 serif">${data.title}</h2>
-                            <p class="text-lg text-gray-700 leading-relaxed">${data.intro}</p>
-                        </header>
-
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-                            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                                <h3 class="font-bold text-gray-600 mb-4 text-sm uppercase tracking-wider">Visualización de Datos</h3>
-                                <div class="chart-container-fluid">
-                                    <canvas id="mainChart"></canvas>
-                                </div>
-                                <p class="text-xs text-gray-400 mt-2 text-center italic">Gráfico interactivo: Pase el cursor para ver detalles críticos.</p>
-                            </div>
-                            
-                            <div class="prose prose-lg text-gray-600">
-                                <h3 class="text-xl font-bold text-gray-800 mb-3">Análisis Detallado</h3>
-                                <p>${data.details}</p>
-                                <div class="mt-6 p-4 bg-red-50 border-l-4 border-red-700 rounded-r">
-                                    <h4 class="font-bold text-red-800 text-sm">Punto Crítico</h4>
-                                    <p class="text-sm text-red-700 mt-1">Este enfoque demuestra cómo la validación metodológica a menudo precede a la validez ontológica. Se mide bien, pero ¿se mide lo correcto?</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                const ctx = document.getElementById('mainChart').getContext('2d');
-                this.state.currentChart = new Chart(ctx, data.chartConfig);
-            },
-
-            renderFalacia: function(container) {
-                const data = reportData.falacia;
-                container.innerHTML = `
-                    <div class="fade-in space-y-8">
-                        <header class="border-b pb-6">
-                            <h2 class="text-3xl font-bold text-gray-800 mb-4 serif">${data.title}</h2>
-                            <p class="text-lg text-gray-700 leading-relaxed">${data.intro}</p>
-                        </header>
-
-                        <div class="bg-white p-6 md:p-10 rounded-xl shadow-sm border border-gray-200">
-                            <h3 class="font-bold text-gray-600 mb-8 text-center uppercase tracking-wider">El Ciclo de la Falacia de Autoridad</h3>
-                            <div class="flex flex-col md:flex-row items-center justify-between gap-4 relative">
-                                
-                                <div class="w-full md:w-1/3 bg-blue-50 p-6 rounded-lg border border-blue-200 text-center cursor-pointer hover:bg-blue-100 transition relative group">
-                                    <div class="text-4xl mb-2">💊</div>
-                                    <h4 class="font-bold text-blue-900">Psiquiatría Biológica</h4>
-                                    <p class="text-xs text-blue-700 mt-2">Busca legitimidad científica.</p>
-                                    <div class="hidden group-hover:block absolute top-full left-0 w-full mt-2 bg-gray-800 text-white text-xs p-2 rounded z-10">
-                                        Critica: Asume causas biológicas sin pruebas biológicas directas en muchos trastornos.
-                                    </div>
-                                </div>
-
-                                <div class="text-3xl text-gray-400 transform rotate-90 md:rotate-0">➔</div>
-
-                                <div class="w-full md:w-1/3 bg-green-50 p-6 rounded-lg border border-green-200 text-center cursor-pointer hover:bg-green-100 transition relative group">
-                                    <div class="text-4xl mb-2">🧠</div>
-                                    <h4 class="font-bold text-green-900">Adopción de TCC</h4>
-                                    <p class="text-xs text-green-700 mt-2">Usa Terapias Cognitivas.</p>
-                                    <div class="hidden group-hover:block absolute top-full left-0 w-full mt-2 bg-gray-800 text-white text-xs p-2 rounded z-10">
-                                        Hecho: La TCC tiene estudios empíricos de eficacia (funciona para reducir síntomas).
-                                    </div>
-                                </div>
-
-                                <div class="text-3xl text-gray-400 transform rotate-90 md:rotate-0">➔</div>
-
-                                <div class="w-full md:w-1/3 bg-red-50 p-6 rounded-lg border border-red-200 text-center cursor-pointer hover:bg-red-100 transition relative group">
-                                    <div class="text-4xl mb-2">🎓</div>
-                                    <h4 class="font-bold text-red-900">Falsa Validación</h4>
-                                    <p class="text-xs text-red-700 mt-2">"Somos científicos porque la TCC lo es."</p>
-                                    <div class="hidden group-hover:block absolute top-full left-0 w-full mt-2 bg-gray-800 text-white text-xs p-2 rounded z-10">
-                                        Falacia: Que la terapia (software) funcione no prueba que la teoría biológica (hardware) sea cierta.
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="mt-8 p-6 bg-gray-50 rounded-lg text-sm text-gray-600">
-                                <p><strong>Interacción:</strong> Pase el cursor sobre cada tarjeta para revelar el análisis crítico de cada paso. Observe cómo la validación pragmática (funciona) se transmuta mágicamente en validación ontológica (es verdad biológica).</p>
-                            </div>
-                        </div>
-                        
-                        <div class="prose prose-lg text-gray-600">
-                            <h3 class="text-xl font-bold text-gray-800 mb-3">Argumento</h3>
-                            <p>${data.details}</p>
-                        </div>
-                    </div>
-                `;
-            },
-
-            renderPolitica: function(container) {
-                const data = reportData.politica;
-                container.innerHTML = `
-                    <div class="fade-in space-y-8">
-                        <header class="border-b pb-6">
-                            <h2 class="text-3xl font-bold text-gray-800 mb-4 serif">${data.title}</h2>
-                            <p class="text-lg text-gray-700 leading-relaxed">${data.intro}</p>
-                        </header>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div class="prose text-gray-600">
-                                <h3 class="text-xl font-bold text-gray-800">El Iceberg del Control Social</h3>
-                                <p>En el contexto peruano y latinoamericano, la psiquiatría hereda estructuras coloniales de segregación. La "Locura" se gestiona no para curar al sujeto, sino para proteger el orden social de lo impredecible.</p>
-                                <p class="mt-4">Utilice el interactivo para explorar las capas ocultas:</p>
-                                
-                                <div class="mt-6 space-y-2">
-                                    <button onclick="app.toggleLayer('layer1')" class="w-full text-left px-4 py-3 bg-blue-100 hover:bg-blue-200 rounded font-semibold text-blue-800 flex justify-between">
-                                        <span>1. Superficie: Discurso Médico</span>
-                                        <span id="icon-layer1">+</span>
-                                    </button>
-                                    <div id="desc-layer1" class="hidden px-4 py-3 bg-white border border-blue-100 text-sm text-gray-600 rounded-b">
-                                        "El paciente tiene un desequilibrio neuroquímico. Necesita internamiento para su estabilización y seguridad." (Lenguaje aséptico, neutral).
-                                    </div>
-
-                                    <button onclick="app.toggleLayer('layer2')" class="w-full text-left px-4 py-3 bg-yellow-100 hover:bg-yellow-200 rounded font-semibold text-yellow-800 flex justify-between">
-                                        <span>2. Práctica: Realidad Institucional</span>
-                                        <span id="icon-layer2">+</span>
-                                    </button>
-                                    <div id="desc-layer2" class="hidden px-4 py-3 bg-white border border-yellow-100 text-sm text-gray-600 rounded-b">
-                                        Hacinamiento, sobremedicación (chalecos químicos), pérdida de derechos civiles, aislamiento de la familia. El tratamiento se convierte en custodia.
-                                    </div>
-
-                                    <button onclick="app.toggleLayer('layer3')" class="w-full text-left px-4 py-3 bg-red-100 hover:bg-red-200 rounded font-semibold text-red-800 flex justify-between">
-                                        <span>3. Fondo: Valor Político Oculto</span>
-                                        <span id="icon-layer3">+</span>
-                                    </button>
-                                    <div id="desc-layer3" class="hidden px-4 py-3 bg-white border border-red-100 text-sm text-gray-600 rounded-b">
-                                        <strong>Gestión de la Pobreza y Disidencia:</strong> El manicomio (o la unidad psiquiátrica moderna con lógica manicomial) sirve para retirar del espacio público a los improductivos, los pobres 'molestos' y los que desafían la norma, despolitizando su sufrimiento al llamarlo 'enfermedad'.
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="bg-gray-100 rounded-xl p-6 flex items-center justify-center border border-gray-200 relative overflow-hidden">
-                                <div class="text-center">
-                                    <div class="w-32 h-32 mx-auto bg-blue-500 rounded-t-full opacity-80 z-10 relative flex items-center justify-center text-white font-bold shadow-lg">
-                                        Salud Pública
-                                    </div>
-                                    <div class="w-full h-1 bg-blue-300 my-1"></div>
-                                    <div class="w-40 h-48 mx-auto bg-gray-700 rounded-b-3xl opacity-90 -mt-1 flex flex-col items-center pt-4 text-gray-300 text-sm shadow-xl">
-                                        <span class="mb-2">Control Social</span>
-                                        <span class="mb-2">Segregación</span>
-                                        <span class="mb-2">Despolitización</span>
-                                    </div>
-                                    <p class="mt-4 text-xs text-gray-500 font-serif italic">Figura: Lo visible vs lo estructural</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            },
-
-            toggleLayer: function(layerId) {
-                const desc = document.getElementById(`desc-${layerId}`);
-                const icon = document.getElementById(`icon-${layerId}`);
-                if (desc.classList.contains('hidden')) {
-                    desc.classList.remove('hidden');
-                    icon.textContent = '-';
-                } else {
-                    desc.classList.add('hidden');
-                    icon.textContent = '+';
-                }
-            }
-        };
-
-        window.addEventListener('DOMContentLoaded', () => { 
-            renderRadar(); switchModel('engel'); // Inicializar gráficos File 2
-            app.init(); // Inicializar App File 3 (ahora de forma silenciosa sin scroll)
+            });
         });
     </script>
 </body>
-
 </html>
